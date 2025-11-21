@@ -8,6 +8,7 @@
     <div class="flex justify-between items-center">
       <h2 class="text-2xl font-bold text-gray-900">文件列表</h2>
       <div class="flex space-x-3">
+        <%= link_to "圖片管理", images_path, class: "text-blue-600 hover:text-blue-800" %>
         <%= link_to "標籤雲", tags_path, class: "text-blue-600 hover:text-blue-800" %>
         <%= link_to "新增文件", new_doc_path, class: "bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700" %>
       </div>
