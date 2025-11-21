@@ -23,4 +23,8 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency "rails", ">= 8.1.1"
+  spec.add_dependency "tailwindcss-rails"
+  spec.add_dependency "stimulus-rails"
+  spec.add_dependency "turbo-rails"
+  spec.add_dependency "redcarpet", "~> 3.6", ">= 3.6.1"
 end
