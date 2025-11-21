@@ -72,6 +72,20 @@ module Docmd
       end
     end
 
+    # POST /docs/preview
+    # 用於即時預覽 Markdown 內容（Turbo Frame 會用 POST 送出表單資料）
+    def preview
+      @doc = DocService.new
+      @doc.build_from_params(doc_params)
+
+      # 解析 Markdown 為 HTML
+      parser = MarkdownParser.new
+      @html_content = parser.parse(@doc.content || '')
+
+      # 只渲染 turbo frame 部分
+      render partial: 'preview', locals: { doc: @doc, html_content: @html_content }
+    end
+
     private
 
     def set_doc

@@ -3,19 +3,58 @@
   <script src="https://cdn.tailwindcss.com"></script>
 <% end %>
 
-<div class="bg-white shadow rounded-lg">
-  <div class="px-6 py-4 border-b">
-    <h2 class="text-2xl font-bold text-gray-900">編輯文件</h2>
+<div class="flex h-screen bg-gray-100 min-w-[1280px]">
+  <!-- 左側：編輯表單 -->
+  <div class="w-1/2 min-w-[640px] overflow-y-auto bg-white shadow-lg">
+    <div class="sticky top-0 bg-white border-b px-6 py-4 z-10">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-bold text-gray-900">編輯文件</h2>
+        <%= link_to "← 返回", doc_path(@doc.slug), class: "text-gray-600 hover:text-gray-900" %>
+      </div>
+    </div>
+
+    <div class="px-6 py-4">
+      <%= form_with scope: :doc,
+                    url: doc_path(@doc.slug),
+                    method: :patch,
+                    id: "edit_form",
+                    data: { turbo: true } do |form| %>
+
+        <%= render 'form', form: form %>
+
+        <div class="mt-6 sticky bottom-0 bg-white border-t pt-4 pb-4">
+          <div class="flex items-center space-x-4">
+            <%= form.submit "更新文件", class: "px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer" %>
+            <!-- 預覽按鈕：使用 formaction 提交到不同的 action，並指定 turbo_frame -->
+            <%= form.submit "預覽",
+                formaction: preview_docs_path,
+                formmethod: "post",
+                data: { turbo_frame: "doc_preview" },
+                class: "px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 cursor-pointer" %>
+            <%= link_to "取消", doc_path(@doc.slug), class: "px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
   </div>
 
-  <div class="px-6 py-4">
-    <%= form_with scope: :doc, url: doc_path(@doc.slug), method: :patch, local: true do |form| %>
-      <%= render 'form', form: form %>
+  <!-- 右側：預覽區域 -->
+  <div class="w-1/2 min-w-[640px] overflow-y-auto bg-gray-50 border-l">
+    <div class="sticky top-0 bg-white border-b px-6 py-4 z-10">
+      <h3 class="text-xl font-semibold text-gray-700">預覽區</h3>
+      <p class="text-sm text-gray-500 mt-1">點擊「預覽」按鈕查看文件效果</p>
+    </div>
 
-      <div class="mt-6 flex items-center space-x-4">
-        <%= form.submit "更新文件", class: "px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer" %>
-        <%= link_to "取消", doc_path(@doc.slug), class: "px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400" %>
-      </div>
-    <% end %>
+    <div class="px-6 py-4">
+      <!-- Turbo Frame 用於顯示預覽內容 -->
+      <%= turbo_frame_tag "doc_preview" do %>
+        <div class="text-center py-12 text-gray-400">
+          <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <p class="mt-4">點擊左側的「預覽」按鈕<br>查看文件渲染效果</p>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>
