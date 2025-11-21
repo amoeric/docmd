@@ -3,14 +3,43 @@
   <script src="https://cdn.tailwindcss.com"></script>
 <% end %>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+  <!-- 使用說明 -->
+  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+    <h3 class="text-sm font-semibold text-blue-900 mb-2">使用說明</h3>
+    <div class="space-y-2 text-sm text-blue-800">
+      <div>
+        <strong>在 Markdown 中插入圖片：</strong>
+        <code class="bg-white px-2 py-1 rounded border border-blue-200">![圖片描述](/docmd/images/圖片路徑)</code>
+      </div>
+      <div>
+        <strong>圖片存放位置：</strong>
+        <code class="bg-white px-2 py-1 rounded border border-blue-200">docs/assets/images/</code>
+      </div>
+      <div>
+        <strong>支援格式：</strong>
+        <span class="text-blue-700">JPG, PNG, GIF, SVG, WebP</span>
+      </div>
+    </div>
+  </div>
+
   <div class="bg-white shadow rounded-lg">
     <div class="px-6 py-4 border-b">
       <div class="flex justify-between items-center">
         <h2 class="text-2xl font-bold text-gray-900">圖片管理</h2>
         <div class="flex space-x-3">
-          <%= link_to "上傳圖片", new_image_path, class: "bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700" %>
-          <%= link_to "文件列表", docs_path, class: "text-blue-600 hover:text-blue-800" %>
+          <%= link_to new_image_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150" do %>
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            上傳圖片
+          <% end %>
+          <%= link_to docs_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150" do %>
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            文件列表
+          <% end %>
         </div>
       </div>
     </div>
@@ -85,27 +114,6 @@
           <%= link_to "上傳第一張圖片", new_image_path, class: "text-blue-600 hover:text-blue-800" %>
         </div>
       <% end %>
-    </div>
-  </div>
-
-  <!-- 使用說明 -->
-  <div class="mt-8 bg-white shadow rounded-lg">
-    <div class="px-6 py-4 border-b">
-      <h3 class="text-lg font-semibold text-gray-900">使用說明</h3>
-    </div>
-    <div class="px-6 py-4 space-y-3 text-sm text-gray-600">
-      <div>
-        <strong>在 Markdown 中插入圖片：</strong>
-        <code class="bg-gray-100 px-2 py-1 rounded">![圖片描述](/docmd/images/圖片路徑)</code>
-      </div>
-      <div>
-        <strong>圖片存放位置：</strong>
-        <code class="bg-gray-100 px-2 py-1 rounded">docs/assets/images/</code>
-      </div>
-      <div>
-        <strong>支援格式：</strong>
-        <span class="text-gray-500">JPG, PNG, GIF, SVG, WebP</span>
-      </div>
     </div>
   </div>
 </div>
