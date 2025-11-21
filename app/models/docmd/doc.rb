@@ -174,7 +174,9 @@ module Docmd
 
       if date_value.nil?
         # 如果沒有設定日期，使用檔案修改時間
-        return File.exist?(full_path) ? File.mtime(full_path) : Time.current
+        # 先檢查 full_path 是否為 nil（例如新建文件時）
+        path = full_path
+        return (path && File.exist?(path)) ? File.mtime(path) : Time.current
       end
 
       # 處理各種日期格式
