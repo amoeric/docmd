@@ -31,7 +31,7 @@
 
       <div class="flex items-center space-x-2">
         <%= link_to "編輯", edit_doc_path(@doc.slug), class: "px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" %>
-        <%= link_to "刪除", doc_path(@doc.slug), method: :delete, data: { confirm: "確定要刪除此文件嗎？" }, class: "px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700" %>
+        <%= link_to "刪除", doc_path(@doc.slug), data: { turbo_method: :delete, turbo_confirm: "確定要刪除此文件嗎？" }, class: "px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700" %>
         <%= link_to "返回列表", docs_path, class: "px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700" %>
       </div>
     </div>
