@@ -4,7 +4,7 @@ module Docmd
 
     # GET /docs
     def index
-      @docs = DocService.all
+      @docs = Doc.all
 
       # 只顯示已發布的文件（如果需要）
       if params[:published_only] == 'true'
@@ -31,12 +31,12 @@ module Docmd
 
     # GET /docs/new
     def new
-      @doc = DocService.new
+      @doc = Doc.new
     end
 
     # POST /docs
     def create
-      @doc = DocService.create(doc_params)
+      @doc = Doc.create(doc_params)
 
       if @doc.valid? && @doc.persisted?
         redirect_to doc_path(@doc.slug), notice: '文件建立成功'
@@ -75,7 +75,7 @@ module Docmd
     # POST /docs/preview
     # 用於即時預覽 Markdown 內容（Turbo Frame 會用 POST 送出表單資料）
     def preview
-      @doc = DocService.new
+      @doc = Doc.new
       @doc.build_from_params(doc_params)
 
       # 解析 Markdown 為 HTML
@@ -89,7 +89,7 @@ module Docmd
     private
 
     def set_doc
-      @doc = DocService.find(params[:id] || params[:slug])
+      @doc = Doc.find(params[:id] || params[:slug])
     end
 
     def doc_params

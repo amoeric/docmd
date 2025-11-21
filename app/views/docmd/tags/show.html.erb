@@ -8,9 +8,9 @@
     <div class="px-6 py-4 border-b">
       <div class="flex justify-between items-center">
         <div class="flex items-center space-x-3">
-          <h2 class="text-2xl font-bold text-gray-900">標籤：<%= @tag %></h2>
+          <h2 class="text-2xl font-bold text-gray-900">標籤：<%= @tag.name %></h2>
           <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-            <%= @docs.size %> 篇文件
+            <%= @tag.count %> 篇文件
           </span>
         </div>
         <div class="flex space-x-2">
@@ -21,8 +21,8 @@
     </div>
 
     <div class="divide-y divide-gray-200">
-      <% if @docs.any? %>
-        <% @docs.each do |doc| %>
+      <% if @tag.docs.any? %>
+        <% @tag.docs.each do |doc| %>
           <div class="px-6 py-6 hover:bg-gray-50 transition">
             <div class="flex justify-between items-start">
               <div class="flex-1">
@@ -60,7 +60,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                       </svg>
                       <% doc.tags.each do |tag| %>
-                        <% if tag == @tag %>
+                        <% if tag == @tag.name %>
                           <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-500 text-white">
                             <%= tag %>
                           </span>
@@ -82,24 +82,14 @@
         <% end %>
       <% else %>
         <div class="px-6 py-12 text-center text-gray-500">
-          <p>沒有找到標籤為「<%= @tag %>」的文件</p>
+          <p>沒有找到標籤為「<%= @tag.name %>」的文件</p>
         </div>
       <% end %>
     </div>
   </div>
 
   <!-- 相關標籤建議 -->
-  <%
-    # 收集所有出現在這些文件中的其他標籤
-    related_tags = Hash.new(0)
-    @docs.each do |doc|
-      doc.tags.each do |tag|
-        next if tag == @tag
-        related_tags[tag] += 1
-      end
-    end
-    related_tags = related_tags.sort_by { |tag, count| -count }.take(10)
-  %>
+  <% related_tags = Docmd::Tag.related_to(@tag.name, 10) %>
 
   <% if related_tags.any? %>
     <div class="mt-8 bg-white shadow rounded-lg">
@@ -108,11 +98,11 @@
       </div>
       <div class="px-6 py-4">
         <div class="flex flex-wrap gap-2">
-          <% related_tags.each do |tag, count| %>
-            <%= link_to tag_path(tag),
+          <% related_tags.each do |tag| %>
+            <%= link_to tag_path(tag.name),
                 class: "inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm" do %>
-              <%= tag %>
-              <span class="ml-1 text-xs opacity-75">(<%= count %>)</span>
+              <%= tag.name %>
+              <span class="ml-1 text-xs opacity-75">(<%= tag.count %>)</span>
             <% end %>
           <% end %>
         </div>

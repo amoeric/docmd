@@ -4,7 +4,7 @@ require 'time'
 require 'date'
 
 module Docmd
-  class DocService
+  class Doc
     include ActiveModel::Model
     include ActiveModel::Attributes
 
@@ -56,15 +56,6 @@ module Docmd
       all.select do |doc|
         doc.tags.include?(tag)
       end
-    end
-
-    # 類別方法：取得所有標籤
-    def self.all_tags
-      tags = Set.new
-      all.each do |doc|
-        doc.tags.each { |tag| tags.add(tag) }
-      end
-      tags.to_a.sort
     end
 
     # 實例方法：讀取檔案

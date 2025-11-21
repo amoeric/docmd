@@ -15,10 +15,10 @@
     <div class="px-6 py-8">
       <% if @tags.any? %>
         <div class="flex flex-wrap gap-4">
-          <% @tags.each do |tag, count| %>
+          <% @tags.each do |tag| %>
             <%
               # 根據文件數量決定標籤大小
-              size_class = case count
+              size_class = case tag.count
                           when 1 then "text-base"
                           when 2..3 then "text-lg"
                           when 4..6 then "text-xl"
@@ -27,7 +27,7 @@
                           end
 
               # 根據文件數量決定顏色深淺
-              color_class = case count
+              color_class = case tag.count
                            when 1 then "bg-blue-100 text-blue-700 hover:bg-blue-200"
                            when 2..3 then "bg-blue-200 text-blue-800 hover:bg-blue-300"
                            when 4..6 then "bg-blue-300 text-blue-900 hover:bg-blue-400"
@@ -35,10 +35,10 @@
                            else "bg-blue-500 text-white hover:bg-blue-600"
                            end
             %>
-            <%= link_to tag_path(tag),
+            <%= link_to tag_path(tag.name),
                 class: "inline-flex items-center px-4 py-2 rounded-full #{color_class} #{size_class} font-medium transition-colors" do %>
-              <%= tag %>
-              <span class="ml-2 text-sm opacity-75">(<%= count %>)</span>
+              <%= tag.name %>
+              <span class="ml-2 text-sm opacity-75">(<%= tag.count %>)</span>
             <% end %>
           <% end %>
         </div>
@@ -46,11 +46,11 @@
         <div class="mt-12 border-t pt-8">
           <h3 class="text-lg font-semibold text-gray-900 mb-4">所有標籤列表</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <% @tags.each do |tag, count| %>
+            <% @tags.each do |tag| %>
               <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                <%= link_to tag, tag_path(tag), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+                <%= link_to tag.name, tag_path(tag.name), class: "text-blue-600 hover:text-blue-800 font-medium" %>
                 <span class="text-sm text-gray-500">
-                  <%= pluralize(count, '篇文件') %>
+                  <%= pluralize(tag.count, '篇文件') %>
                 </span>
               </div>
             <% end %>
@@ -58,7 +58,7 @@
         </div>
 
         <div class="mt-8 text-center text-sm text-gray-500">
-          共 <%= @tags.size %> 個標籤，<%= @tags.sum { |_, count| count } %> 篇文件
+          共 <%= @tags.size %> 個標籤，<%= @tags.sum(&:count) %> 篇文件
         </div>
       <% else %>
         <div class="text-center py-12 text-gray-500">
