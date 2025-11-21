@@ -54,13 +54,13 @@
                   </button>
 
                   <!-- 刪除 -->
-                  <%= link_to "刪除",
-                      image_file_path(path: image.path),
-                      data: {
-                        turbo_method: :delete,
-                        turbo_confirm: "確定要刪除此圖片嗎？"
-                      },
-                      class: "text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200" %>
+                  <%= form_with url: image_file_path(path: image.path),
+                               method: :delete,
+                               class: "inline delete-form" do |f| %>
+                    <%= f.submit "刪除",
+                        onclick: "return confirm('確定要刪除此圖片嗎？');",
+                        class: "text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 cursor-pointer border-0" %>
+                  <% end %>
                 </div>
 
                 <!-- 路徑資訊 -->
