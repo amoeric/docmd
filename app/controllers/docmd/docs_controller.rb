@@ -41,7 +41,7 @@ module Docmd
       if @doc.valid? && @doc.persisted?
         redirect_to doc_path(@doc.slug), notice: '文件建立成功'
       else
-        flash.now[:alert] = @doc.errors.join(', ')
+        flash.now[:alert] = @doc.errors.full_messages.join(', ') if @doc.errors.any?
         render :new
       end
     end
@@ -58,7 +58,7 @@ module Docmd
       if @doc && @doc.update(doc_params)
         redirect_to doc_path(@doc.slug), notice: '文件更新成功'
       else
-        flash.now[:alert] = @doc&.errors&.join(', ') || '更新失敗'
+        flash.now[:alert] = @doc&.errors&.full_messages&.join(', ') || '更新失敗'
         render :edit
       end
     end

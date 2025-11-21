@@ -5,11 +5,16 @@ require 'date'
 
 module Docmd
   class DocService
-    attr_reader :file_path, :metadata, :content, :slug, :errors
+    include ActiveModel::Model
+    include ActiveModel::Attributes
+
+    attr_reader :file_path, :metadata, :content, :slug
+    attr_accessor :title, :layout, :date, :tags, :publish
 
     def initialize(file_path = nil)
+      super()  # 重要：呼叫 ActiveModel::Model 的初始化
       @file_path = file_path
-      @errors = []
+      @metadata = {}
       load_file if file_path && File.exist?(full_path)
     end
 
@@ -104,7 +109,7 @@ module Docmd
       File.write(full_path, full_content)
       true
     rescue => e
-      @errors << "儲存失敗: #{e.message}"
+      errors.add(:base, "儲存失敗: #{e.message}")
       false
     end
 
@@ -115,7 +120,7 @@ module Docmd
       File.delete(full_path)
       true
     rescue => e
-      @errors << "刪除失敗: #{e.message}"
+      errors.add(:base, "刪除失敗: #{e.message}")
       false
     end
 
@@ -124,12 +129,12 @@ module Docmd
       @file_path && File.exist?(full_path)
     end
 
-    # 驗證
+    # 驗證 (使用 ActiveModel 的驗證)
     def valid?
-      @errors.clear
-      @errors << "標題不能為空" if @metadata&.dig('title').to_s.strip.empty?
-      @errors << "Slug 不能為空" if @slug.to_s.strip.empty?
-      @errors.empty?
+      errors.clear
+      errors.add(:title, "不能為空") if title.to_s.strip.empty?
+      errors.add(:slug, "不能為空") if @slug.to_s.strip.empty?
+      errors.empty?
     end
 
     # 取得完整路徑
