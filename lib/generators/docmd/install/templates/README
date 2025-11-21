@@ -1,0 +1,26 @@
+===============================================================================
+
+Docmd 已成功安裝！
+
+接下來的步驟：
+
+1. 初始化配置檔已建立在 config/initializers/docmd.rb
+   你可以在此檔案中設定 Markdown 檔案的資料夾路徑
+
+2. 預設的 docs 資料夾已建立在你的 Rails 應用程式根目錄
+   你可以將你的 Markdown 檔案放在這個資料夾中
+
+3. 在你的 routes.rb 中掛載 Docmd engine：
+   mount Docmd::Engine => "/docmd"
+
+4. 使用範例：
+   # 在 controller 或其他地方使用
+   parser = Docmd::MarkdownParser.new
+   html_content = parser.parse_file(Rails.root.join('docs', 'example.md'))
+
+   # 或解析所有檔案
+   all_docs = Docmd::MarkdownParser.parse_all
+
+5. 重新啟動你的 Rails 應用程式以載入新的配置
+
+===============================================================================
