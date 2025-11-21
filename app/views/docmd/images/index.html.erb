@@ -56,8 +56,10 @@
                   <!-- 刪除 -->
                   <%= link_to "刪除",
                       image_file_path(path: image.path),
-                      method: :delete,
-                      data: { confirm: "確定要刪除此圖片嗎？" },
+                      data: {
+                        turbo_method: :delete,
+                        turbo_confirm: "確定要刪除此圖片嗎？"
+                      },
                       class: "text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200" %>
                 </div>
 
