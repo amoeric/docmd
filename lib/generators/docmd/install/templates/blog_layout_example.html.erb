@@ -1,0 +1,67 @@
+<!-- 這是一個範例 layout，可以放在 app/views/layouts/blog.html.erb -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= @doc&.title || 'Blog' %> - My App</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <!-- 你的樣式表 -->
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  </head>
+
+  <body>
+    <!-- 部落格專用的導航列 -->
+    <nav class="blog-nav">
+      <div class="container">
+        <h1><%= link_to "My Blog", root_path %></h1>
+        <ul>
+          <li><%= link_to "所有文章", docmd.docs_path %></li>
+          <li><%= link_to "關於", about_path %></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- 部落格內容區域 -->
+    <main class="blog-main">
+      <div class="container">
+        <article class="blog-post">
+          <!-- 文章標題和元資料 -->
+          <% if @doc %>
+            <header class="post-header">
+              <h1 class="post-title"><%= @doc.title %></h1>
+              <div class="post-meta">
+                <time><%= @doc.date.strftime('%Y 年 %m 月 %d 日') %></time>
+                <% if @doc.tags.any? %>
+                  <div class="tags">
+                    <% @doc.tags.each do |tag| %>
+                      <span class="tag"><%= tag %></span>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </header>
+          <% end %>
+
+          <!-- 主要內容 -->
+          <%= yield %>
+        </article>
+
+        <!-- 側邊欄 -->
+        <aside class="blog-sidebar">
+          <h3>最新文章</h3>
+          <!-- 可以在這裡列出其他文章 -->
+        </aside>
+      </div>
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="blog-footer">
+      <div class="container">
+        <p>&copy; <%= Date.current.year %> My Blog. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>

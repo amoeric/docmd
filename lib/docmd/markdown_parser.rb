@@ -33,10 +33,13 @@ module Docmd
       )
     end
 
-    # 解析單一 markdown 字串
+    # 解析單一 markdown 字串（移除 front matter）
     def parse(markdown_content)
       return "" if markdown_content.blank?
-      @markdown.render(markdown_content)
+
+      # 移除 YAML front matter
+      content_without_frontmatter = markdown_content.sub(/\A---\s*\n.*?\n---\s*\n/m, '')
+      @markdown.render(content_without_frontmatter)
     end
 
     # 解析檔案
@@ -75,6 +78,8 @@ module Docmd
 
     # 從檔案提取元資料（例如 front matter）
     def self.extract_metadata(file_path)
+      return {} unless File.exist?(file_path)
+
       content = File.read(file_path)
       metadata = {}
 
@@ -82,18 +87,35 @@ module Docmd
       if content =~ /\A---\s*\n(.*?)\n---\s*\n/m
         begin
           require 'yaml'
-          metadata = YAML.safe_load($1, permitted_classes: [Date, Time])
+          metadata = YAML.safe_load($1, permitted_classes: [Date, Time, DateTime])
         rescue => e
-          Rails.logger.error "Error parsing YAML front matter: #{e.message}" if defined?(Rails)
+          Rails.logger.error "Error parsing YAML front matter in #{file_path}: #{e.message}" if defined?(Rails)
         end
       end
 
       # 加入檔案資訊
-      metadata.merge(
-        filename: File.basename(file_path),
-        path: file_path,
-        updated_at: File.mtime(file_path)
+      metadata.merge!(
+        'filename' => File.basename(file_path),
+        'path' => file_path,
+        'updated_at' => File.mtime(file_path),
+        'slug' => File.basename(file_path, '.md')
       )
+
+      # 確保有標題
+      metadata['title'] ||= File.basename(file_path, '.md').humanize
+
+      metadata
+    end
+
+    # 分離 front matter 和內容
+    def self.split_content(file_content)
+      if file_content =~ /\A---\s*\n(.*?)\n---\s*\n(.*)/m
+        front_matter = $1
+        content = $2
+        [front_matter, content]
+      else
+        [nil, file_content]
+      end
     end
   end
 end

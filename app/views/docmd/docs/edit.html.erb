@@ -1,0 +1,16 @@
+<div class="bg-white shadow rounded-lg">
+  <div class="px-6 py-4 border-b">
+    <h2 class="text-2xl font-bold text-gray-900">編輯文件</h2>
+  </div>
+
+  <div class="px-6 py-4">
+    <%= form_with model: @doc, url: doc_path(@doc.slug), method: :patch, local: true do |form| %>
+      <%= render 'form', form: form %>
+
+      <div class="mt-6 flex items-center space-x-4">
+        <%= form.submit "更新文件", class: "px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer" %>
+        <%= link_to "取消", doc_path(@doc.slug), class: "px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400" %>
+      </div>
+    <% end %>
+  </div>
+</div>

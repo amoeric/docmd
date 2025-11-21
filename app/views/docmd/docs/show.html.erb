@@ -1,0 +1,51 @@
+<div class="bg-white shadow rounded-lg">
+  <div class="px-6 py-4 border-b">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900"><%= @doc.title %></h1>
+        <div class="mt-2 flex items-center space-x-4 text-sm text-gray-600">
+          <span>更新時間：<%= @doc.date.strftime('%Y-%m-%d %H:%M') %></span>
+          <% if @doc.published? %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              已發布
+            </span>
+          <% else %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              草稿
+            </span>
+          <% end %>
+        </div>
+        <% if @doc.tags.any? %>
+          <div class="mt-2">
+            <% @doc.tags.each do |tag| %>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800 mr-2">
+                <%= tag %>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <%= link_to "編輯", edit_doc_path(@doc.slug), class: "px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" %>
+        <%= link_to "刪除", doc_path(@doc.slug), method: :delete, data: { confirm: "確定要刪除此文件嗎？" }, class: "px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700" %>
+        <%= link_to "返回列表", docs_path, class: "px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-6 py-8">
+    <article class="prose prose-lg max-w-none">
+      <%= raw @doc.html_content %>
+    </article>
+  </div>
+
+  <div class="px-6 py-4 border-t bg-gray-50">
+    <details class="cursor-pointer">
+      <summary class="font-medium text-gray-700 hover:text-gray-900">檢視原始 Markdown</summary>
+      <div class="mt-4">
+        <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto text-sm"><%= @doc.content %></pre>
+      </div>
+    </details>
+  </div>
+</div>

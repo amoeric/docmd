@@ -13,7 +13,16 @@ Docmd 已成功安裝！
 3. 在你的 routes.rb 中掛載 Docmd engine：
    mount Docmd::Engine => "/docmd"
 
-4. 使用範例：
+4. Layout 設定：
+   - 預設情況下，文件會使用你的 application layout
+   - 你可以在 MD 檔的 front matter 中指定特定的 layout：
+     ---
+     layout: blog  # 會使用 app/views/layouts/blog.html.erb
+     title: "我的文章"
+     ---
+   - 範例 blog layout 已提供在 lib/generators/docmd/install/templates/blog_layout_example.html.erb
+
+5. 使用範例：
    # 在 controller 或其他地方使用
    parser = Docmd::MarkdownParser.new
    html_content = parser.parse_file(Rails.root.join('docs', 'example.md'))
@@ -21,6 +30,9 @@ Docmd 已成功安裝！
    # 或解析所有檔案
    all_docs = Docmd::MarkdownParser.parse_all
 
-5. 重新啟動你的 Rails 應用程式以載入新的配置
+6. 訪問文件管理介面：
+   http://localhost:3000/docmd
+
+7. 重新啟動你的 Rails 應用程式以載入新的配置
 
 ===============================================================================

@@ -1,0 +1,55 @@
+<div class="bg-white shadow rounded-lg">
+  <div class="px-6 py-4 border-b">
+    <h2 class="text-2xl font-bold text-gray-900">文件列表</h2>
+  </div>
+
+  <div class="divide-y divide-gray-200">
+    <% if @docs.any? %>
+      <% @docs.each do |doc| %>
+        <div class="px-6 py-4 hover:bg-gray-50 transition">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold">
+                <%= link_to doc.title, doc_path(doc.slug), class: "text-blue-600 hover:text-blue-800" %>
+                <% if doc.published? %>
+                  <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    已發布
+                  </span>
+                <% else %>
+                  <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    草稿
+                  </span>
+                <% end %>
+              </h3>
+
+              <div class="mt-1 text-sm text-gray-600">
+                <span>更新時間：<%= doc.date.strftime('%Y-%m-%d %H:%M') %></span>
+                <% if doc.tags.any? %>
+                  <span class="ml-4">
+                    標籤：
+                    <% doc.tags.each do |tag| %>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                        <%= tag %>
+                      </span>
+                    <% end %>
+                  </span>
+                <% end %>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-2 ml-4">
+              <%= link_to "檢視", doc_path(doc.slug), class: "text-sm text-blue-600 hover:text-blue-800" %>
+              <%= link_to "編輯", edit_doc_path(doc.slug), class: "text-sm text-yellow-600 hover:text-yellow-800" %>
+              <%= link_to "刪除", doc_path(doc.slug), method: :delete, data: { confirm: "確定要刪除此文件嗎？" }, class: "text-sm text-red-600 hover:text-red-800" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="px-6 py-12 text-center text-gray-500">
+        <p class="mb-4">目前沒有文件</p>
+        <%= link_to "建立第一個文件", new_doc_path, class: "text-blue-600 hover:text-blue-800" %>
+      </div>
+    <% end %>
+  </div>
+</div>
