@@ -51,6 +51,22 @@ module Docmd
       doc
     end
 
+    # 類別方法：按標籤查找文件
+    def self.find_by_tag(tag)
+      all.select do |doc|
+        doc.tags.include?(tag)
+      end
+    end
+
+    # 類別方法：取得所有標籤
+    def self.all_tags
+      tags = Set.new
+      all.each do |doc|
+        doc.tags.each { |tag| tags.add(tag) }
+      end
+      tags.to_a.sort
+    end
+
     # 實例方法：讀取檔案
     def load_file
       return unless exists?

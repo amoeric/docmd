@@ -10,6 +10,9 @@ Docmd::Engine.routes.draw do
     end
   end
 
+  # Tags routes
+  resources :tags, only: [:index, :show]
+
   # 根路徑導向文件列表
   root to: 'docs#index'
 end

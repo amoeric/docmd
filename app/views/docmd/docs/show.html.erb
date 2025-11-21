@@ -23,9 +23,7 @@
         <% if @doc.tags.any? %>
           <div class="mt-2">
             <% @doc.tags.each do |tag| %>
-              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800 mr-2">
-                <%= tag %>
-              </span>
+              <%= link_to tag, tag_path(tag), class: "inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 mr-2" %>
             <% end %>
           </div>
         <% end %>
