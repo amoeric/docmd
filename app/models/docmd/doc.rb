@@ -9,7 +9,7 @@ module Docmd
     include ActiveModel::Attributes
 
     attr_reader :file_path, :metadata, :content, :slug
-    attr_accessor :title, :layout, :date, :tags, :publish
+    attr_accessor :title, :layout, :date, :tags, :publish, :roles
 
     def initialize(file_path = nil)
       super()  # 重要：呼叫 ActiveModel::Model 的初始化
@@ -87,6 +87,9 @@ module Docmd
 
       # 只有在有值時才設定 layout，避免寫入空值
       @metadata['layout'] = params[:layout] if params[:layout].present?
+
+      # 處理 roles 設定（用於權限控制）
+      @metadata['roles'] = parse_roles(params[:roles]) if params[:roles].present?
 
       @content = params[:content] || ''
       @slug = params[:slug] || params[:title]&.parameterize
@@ -199,6 +202,35 @@ module Docmd
       @metadata&.dig('tags') || []
     end
 
+    # 取得角色限制
+    def roles
+      @metadata&.dig('roles') || []
+    end
+
+    # 檢查使用者是否有權限查看文件
+    # user: 主應用程式的使用者物件（需要支援 has_role? 方法）
+    # 返回 true 表示有權限，false 表示無權限
+    def accessible_by?(user = nil)
+      # 如果沒有設定 roles，表示所有人都可以看
+      return true if roles.empty?
+
+      # 如果沒有使用者（未登入），無法查看有角色限制的文件
+      return false if user.nil?
+
+      # 檢查使用者是否有任何符合的角色
+      # 假設主應用程式的 User 模型使用 rolify gem
+      if user.respond_to?(:has_role?)
+        # 管理員總是可以查看所有文件
+        return true if user.has_role?(:admin)
+
+        # 檢查使用者是否有文件要求的任何角色
+        roles.any? { |role| user.has_role?(role.to_sym) }
+      else
+        # 如果使用者物件不支援 has_role?，預設無權限
+        false
+      end
+    end
+
     # 用於表單
     def to_param
       @slug
@@ -218,6 +250,17 @@ module Docmd
         tags_input.split(',').map(&:strip)
       else
         Array(tags_input)
+      end
+    end
+
+    # 解析角色字串
+    def parse_roles(roles_input)
+      return [] if roles_input.blank?
+
+      if roles_input.is_a?(String)
+        roles_input.split(',').map(&:strip).map(&:downcase)
+      else
+        Array(roles_input).map(&:to_s).map(&:downcase)
       end
     end
 

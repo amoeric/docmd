@@ -10,6 +10,11 @@ module Docmd
       if params[:published_only] == 'true'
         @docs = @docs.select(&:published?)
       end
+
+      # 權限過濾：只顯示使用者有權限查看的文件
+      if respond_to?(:current_user, true)
+        @docs = @docs.select { |doc| doc.accessible_by?(current_user) }
+      end
     end
 
     # GET /docs/:slug
@@ -17,6 +22,14 @@ module Docmd
       unless @doc
         redirect_to docs_path, alert: '找不到文件'
         return
+      end
+
+      # 權限檢查：如果主應用程式有 current_user 方法，檢查權限
+      if respond_to?(:current_user, true)
+        unless @doc.accessible_by?(current_user)
+          redirect_to docs_path, alert: '您沒有權限查看此文件'
+          return
+        end
       end
 
       # 根據文件的 layout 設定來決定使用哪個 Rails layout
@@ -93,7 +106,7 @@ module Docmd
     end
 
     def doc_params
-      params.require(:doc).permit(:title, :content, :slug, :layout, :date, :tags, :publish)
+      params.require(:doc).permit(:title, :content, :slug, :layout, :date, :tags, :publish, :roles)
     end
   end
 end
