@@ -28,4 +28,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "turbo-rails"
   spec.add_dependency "redcarpet", "~> 3.6", ">= 3.6.1"
   spec.add_dependency "mini_mime", "~> 1.1"
+  spec.add_dependency "rolify"
+  spec.add_dependency "pundit"
 end
