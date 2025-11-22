@@ -69,6 +69,9 @@ end
 可以自訂 markdown 內容樣式：
 - **[Markdown 內容樣式](docs/markdown_content_css.md)**
 
+### 6. 新增 rails block 設定
+部分頁面使用 rails block，安裝方式請參考 [Installation](https://railsblocks.com/docs/installation)
+
 ## 文件索引
 
 詳細的使用說明請參考以下文件：

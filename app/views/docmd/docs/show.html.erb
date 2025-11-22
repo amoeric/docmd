@@ -30,9 +30,9 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <%= link_to "編輯", edit_doc_path(@doc.slug), class: "px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" %>
-        <%= link_to "刪除", doc_path(@doc.slug), data: { turbo_method: :delete, turbo_confirm: "確定要刪除此文件嗎？" }, class: "px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700" %>
-        <%= link_to "返回列表", docs_path, class: "px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700" %>
+        <%= link_to "編輯", edit_doc_path(@doc.slug), class: "px-4 py-2 text-sm font-medium rounded-lg bg-amber-600 text-white shadow-sm hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200" %>
+        <%= link_to "刪除", doc_path(@doc.slug), data: { turbo_method: :delete, turbo_confirm: "確定要刪除此文件嗎？" }, class: "px-4 py-2 text-sm font-medium rounded-lg bg-red-600 text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200" %>
+        <%= link_to "返回列表", docs_path, class: "px-4 py-2 text-sm font-medium rounded-lg bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200" %>
       </div>
     </div>
   </div>
