@@ -51,10 +51,12 @@
             <div class="bg-gray-50 rounded-lg overflow-hidden shadow hover:shadow-lg transition">
               <!-- 圖片預覽 -->
               <div class="aspect-w-16 aspect-h-9 bg-gray-200">
-                <%= image_tag image.url,
-                    alt: image.alt_text,
-                    class: "w-full h-48 object-cover",
-                    loading: "lazy" %>
+                <%= link_to image.url, target: "_blank" do %>
+                  <%= image_tag image.url,
+                      alt: image.alt_text,
+                      class: "w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity",
+                      loading: "lazy" %>
+                <% end %>
               </div>
 
               <!-- 圖片資訊 -->
