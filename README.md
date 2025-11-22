@@ -33,7 +33,7 @@ gem 'docmd'
 bundle install
 ```
 
-### 3. 執行安裝 generator
+### 3. 執行 generator、建立設定檔
 
 ```bash
 rails generate docmd:install
@@ -56,13 +56,18 @@ end
 
 ### 5. 加入 docmd CSS
 
-在主應用程式的 layout 檔案（通常是 `app/views/layouts/application.html.erb`）的 `<head>` 區塊中加入：
+專案所有頁面均使用 tailwindcss CDN
 
-```erb
+在主應用程式加入 docmd 設定的 markdown stylesheet
+
+```
+# app/views/laouts/application.html.erb
+<%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "docmd/application", "data-turbo-track": "reload" %>
 ```
 
-現在可以訪問 `/docmd` 查看文件管理介面了！
+可以自訂 markdown 內容樣式：
+- **[Markdown 內容樣式](docs/markdown_content_css.md)**
 
 ## 文件索引
 
