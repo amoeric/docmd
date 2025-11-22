@@ -3,7 +3,8 @@ module Docmd
     # GET /images
     # 圖片管理頁面
     def index
-      @images = Image.all
+      authorize Image
+      @images = policy_scope(Image, policy_scope_class: ImagePolicy::Scope)
     end
 
     # GET /images/*path
@@ -16,6 +17,7 @@ module Docmd
       @image = Image.find(path)
 
       if @image
+        authorize @image
         # 發送圖片檔案
         send_file @image.full_path,
                   type: @image.content_type,
@@ -30,11 +32,14 @@ module Docmd
     # 上傳圖片頁面
     def new
       @image = Image.new
+      authorize @image
     end
 
     # POST /images
     # 上傳圖片
     def create
+      authorize Image
+
       uploaded_file = params[:image][:file]
       subdirectory = params[:image][:subdirectory]
 
@@ -57,17 +62,23 @@ module Docmd
 
       @image = Image.find(path)
 
-      if @image&.destroy
-        redirect_to images_path, notice: "圖片已刪除"
+      if @image
+        authorize @image
+        if @image.destroy
+          redirect_to images_path, notice: "圖片已刪除"
+        else
+          redirect_to images_path, alert: "刪除失敗"
+        end
       else
-        redirect_to images_path, alert: "刪除失敗"
+        redirect_to images_path, alert: "找不到圖片"
       end
     end
 
     # GET /images/insert
     # 圖片插入選擇器（用於編輯器）
     def insert
-      @images = Image.all
+      authorize Image, :index?
+      @images = policy_scope(Image, policy_scope_class: ImagePolicy::Scope)
       @target = params[:target] # 目標輸入框的 ID
       render layout: false # 不使用 layout，用於彈出視窗
     end

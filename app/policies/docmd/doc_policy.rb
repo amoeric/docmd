@@ -13,14 +13,14 @@ module Docmd
     end
 
     def show?
-      # 如果文件沒有設定角色限制，所有人都可以看
-      return true if doc.roles.empty?
-
       # 需要登入才能看有角色限制的文件
       return false unless user
 
-      # 管理員可以看所有文件
-      return true if admin?
+      # 未發布的文件只有管理員可以看
+      return admin? unless doc.published?
+
+      # 如果文件沒有設定角色限制，所有人都可以看
+      return true if doc.roles.empty?
 
       # 檢查使用者是否有文件所需的任一角色
       doc.roles.any? { |role| user.has_role?(role.to_sym) }

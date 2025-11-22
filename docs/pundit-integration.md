@@ -2,15 +2,40 @@
 
 本指南說明 Docmd 如何整合 Pundit 進行權限管理。
 
+## 快速摘要
+
+- **未公開文件（草稿）**：只有管理員可以查看和編輯
+- **已公開文件**：
+  - 無角色限制：所有人可見
+  - 有角色限制：需登入且擁有指定角色
+- **管理操作**：新增、編輯、刪除文件需要管理員權限
+
 ## 內建 Policy
 
 Docmd 已經內建了預設的 Pundit Policy，您可以直接使用或覆寫它。
 
 ### 預設權限規則
 
+#### 文件權限 (DocPolicy)
+
 Docmd 提供的預設 `Docmd::DocPolicy` 規則：
-- **查看文件**：沒有角色限制的文件所有人都可看；有角色限制的需要登入且擁有對應角色
+- **查看文件**：
+  - 未公開（草稿）的文件：只有管理員可以查看
+  - 已公開的文件：
+    - 沒有角色限制的文件所有人都可看
+    - 有角色限制的需要登入且擁有對應角色
 - **新增/編輯/刪除**：只有管理員可以執行（由 `config.admin_roles` 設定）
+
+#### 圖片權限 (ImagePolicy)
+
+Docmd 提供的預設 `Docmd::ImagePolicy` 規則：
+- **所有操作**：只有管理員可以執行
+  - 查看圖片列表 (index)
+  - 查看圖片 (show)
+  - 上傳新圖片 (new/create)
+  - 刪除圖片 (destroy)
+  - 圖片選擇器 (insert)
+- **權限檢查**：所有圖片相關頁面都需要管理員權限
 
 ## 自訂 Policy
 
@@ -18,14 +43,20 @@ Docmd 提供的預設 `Docmd::DocPolicy` 規則：
 
 ### 1. 建立自訂 Policy
 
-在主應用程式建立 `app/policies/docmd/doc_policy.rb` 來覆寫預設規則：
+可在主應用程式建立 `app/policies/docmd/doc_policy.rb` 來覆寫預設規則：
 
 ```ruby
+# app/policies/docmd/doc_policy.rb
 module Docmd
   class DocPolicy < ApplicationPolicy
     def show?
       # 自訂您的顯示權限邏輯
-      return true if doc.roles.empty?  # 公開文件
+
+      # 未公開的文件只有管理員可以看
+      return admin? if !doc.published?
+
+      # 公開文件的權限檢查
+      return true if doc.roles.empty?  # 沒有角色限制的公開文件
       return false unless user         # 需要登入
 
       # 使用 rolify 檢查角色
@@ -42,6 +73,43 @@ module Docmd
     end
 
     # ... 其他方法
+  end
+end
+```
+
+### 2. 自訂圖片權限
+
+如果需要調整圖片權限（例如：允許編輯者上傳圖片），可建立 `app/policies/docmd/image_policy.rb`：
+
+```ruby
+# app/policies/docmd/image_policy.rb
+module Docmd
+  class ImagePolicy < ApplicationPolicy
+    def index?
+      # 允許編輯者查看圖片列表
+      user && (admin? || editor?)
+    end
+
+    def create?
+      # 允許編輯者上傳圖片
+      user && (admin? || editor?)
+    end
+
+    def destroy?
+      # 只有管理員可以刪除圖片
+      admin?
+    end
+
+    private
+
+    def editor?
+      user.has_role?(:editor)
+    end
+
+    def admin?
+      admin_roles = Docmd.configuration.admin_roles || [:admin, :super_admin]
+      admin_roles.any? { |role| user.has_role?(role) }
+    end
   end
 end
 ```
@@ -82,17 +150,46 @@ def can_view_doc?
 end
 ```
 
-## 文件的角色設定
+## 文件的可見性設定
+
+### 發布狀態
+
+在 Markdown 文件的 front matter 中設定發布狀態：
+
+```markdown
+---
+title: 草稿文件
+publish: false  # 設為 false 表示未公開，只有管理員可見
+---
+
+這份文件還在編輯中，只有管理員可以查看。
+```
+
+### 角色限制
 
 在 Markdown 文件的 front matter 中設定所需角色：
 
 ```markdown
 ---
 title: 內部文件
-roles: [employee, manager]
+publish: true  # 已公開
+roles: [employee, manager]  # 需要這些角色之一才能查看
 ---
 
 這份文件只有 employee 或 manager 角色的使用者可以查看。
+```
+
+### 組合使用
+
+```markdown
+---
+title: 機密文件
+publish: false  # 未公開（草稿）
+roles: [executive]  # 當發布後，只有 executive 可見
+---
+
+這份文件目前是草稿狀態，只有管理員可見。
+發布後將只對 executive 角色開放。
 ```
 
 ## 測試權限

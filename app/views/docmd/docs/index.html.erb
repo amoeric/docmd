@@ -13,7 +13,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
           </svg>
           圖片管理
-        <% end %>
+        <% end if policy(Docmd::Image).index? %>
         <%= link_to tags_path, class: "inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200" do %>
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
@@ -25,7 +25,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
           新增文件
-        <% end %>
+        <% end if policy(Docmd::Doc).new? %>
       </div>
     </div>
   </div>
@@ -63,19 +63,6 @@
             </div>
 
             <div class="flex items-center gap-1 ml-4">
-              <!-- 檢視按鈕 -->
-              <%= link_to doc_path(doc.slug),
-                  class: "group relative inline-flex items-center justify-center p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-all duration-200 hover:shadow-md",
-                  title: "檢視文件" do %>
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
-                <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                  檢視
-                </span>
-              <% end %>
-
               <!-- 編輯按鈕 -->
               <%= link_to edit_doc_path(doc.slug),
                   class: "group relative inline-flex items-center justify-center p-2 rounded-lg text-amber-600 hover:bg-amber-50 transition-all duration-200 hover:shadow-md",
@@ -86,7 +73,7 @@
                 <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                   編輯
                 </span>
-              <% end %>
+              <% end if policy(doc).edit? %>
 
               <!-- 刪除按鈕 -->
               <%= link_to doc_path(doc.slug),
@@ -99,7 +86,7 @@
                 <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   刪除
                 </span>
-              <% end %>
+              <% end if policy(doc).destroy? %>
             </div>
           </div>
         </div>
