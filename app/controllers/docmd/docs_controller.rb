@@ -12,6 +12,9 @@ module Docmd
       if params[:published_only] == 'true'
         @docs = @docs.select(&:published?)
       end
+
+      # 依照日期排序，最新的在前面
+      @docs = @docs.sort_by(&:date).reverse
     end
 
     # GET /docs/:slug
