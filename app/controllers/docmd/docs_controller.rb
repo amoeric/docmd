@@ -1,43 +1,27 @@
 module Docmd
   class DocsController < ApplicationController
     before_action :set_doc, only: [:show, :edit, :update, :destroy]
+    after_action :verify_authorized, except: [:index]
+    after_action :verify_policy_scoped, only: [:index]
 
     # GET /docs
     def index
-      @docs = Doc.all
+      @docs = pundit_policy_scope(Doc)
 
       # 只顯示已發布的文件（如果需要）
       if params[:published_only] == 'true'
         @docs = @docs.select(&:published?)
       end
-
-      # 權限過濾：只顯示使用者有權限查看的文件
-      if respond_to?(:current_user, true)
-        @docs = @docs.select { |doc| doc.accessible_by?(current_user) }
-      end
     end
 
     # GET /docs/:slug
     def show
-      unless @doc
-        redirect_to docs_path, alert: '找不到文件'
-        return
-      end
-
-      # 權限檢查：如果主應用程式有 current_user 方法，檢查權限
-      if respond_to?(:current_user, true)
-        unless @doc.accessible_by?(current_user)
-          redirect_to docs_path, alert: '您沒有權限查看此文件'
-          return
-        end
-      end
+      authorize @doc
 
       # 根據文件的 layout 設定來決定使用哪個 Rails layout
       if @doc.metadata['layout'].present?
-        # 如果 MD 檔有設定 layout，使用指定的 layout
         render :show, layout: @doc.metadata['layout']
       else
-        # 如果沒有設定，使用預設的 application layout（繼承自 ::ApplicationController）
         render :show
       end
     end
@@ -45,13 +29,15 @@ module Docmd
     # GET /docs/new
     def new
       @doc = Doc.new
+      authorize @doc
     end
 
     # POST /docs
     def create
-      @doc = Doc.create(doc_params)
+      @doc = Doc.new(doc_params)
+      authorize @doc
 
-      if @doc.valid? && @doc.persisted?
+      if @doc.save
         redirect_to doc_path(@doc.slug), notice: '文件建立成功'
       else
         flash.now[:alert] = @doc.errors.full_messages.join(', ') if @doc.errors.any?
@@ -61,24 +47,26 @@ module Docmd
 
     # GET /docs/:slug/edit
     def edit
-      unless @doc
-        redirect_to docs_path, alert: '找不到文件'
-      end
+      authorize @doc
     end
 
     # PATCH/PUT /docs/:slug
     def update
-      if @doc && @doc.update(doc_params)
+      authorize @doc
+
+      if @doc.update(doc_params)
         redirect_to doc_path(@doc.slug), notice: '文件更新成功'
       else
-        flash.now[:alert] = @doc&.errors&.full_messages&.join(', ') || '更新失敗'
+        flash.now[:alert] = @doc.errors.full_messages.join(', ') if @doc.errors.any?
         render :edit
       end
     end
 
     # DELETE /docs/:slug
     def destroy
-      if @doc && @doc.destroy
+      authorize @doc
+
+      if @doc.destroy
         redirect_to docs_path, notice: '文件刪除成功'
       else
         redirect_to docs_path, alert: '刪除失敗'
@@ -90,6 +78,7 @@ module Docmd
     def preview
       @doc = Doc.new
       @doc.build_from_params(doc_params)
+      authorize @doc, :new?
 
       # 解析 Markdown 為 HTML
       parser = MarkdownParser.new
@@ -103,6 +92,8 @@ module Docmd
 
     def set_doc
       @doc = Doc.find(params[:id] || params[:slug])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to docs_path, alert: '找不到文件'
     end
 
     def doc_params

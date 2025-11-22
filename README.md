@@ -73,6 +73,7 @@ end
 - **[CRUD 功能](docs/crud.md)** - 文件的建立、讀取、更新、刪除
 - **[圖片管理](docs/image-management.md)** - 圖片上傳和管理功能
 - **[角色權限](docs/role-permissions.md)** - 基於角色的權限控制
+- **[Pundit 整合](docs/pundit-integration.md)** - 使用 Pundit 進行進階權限管理
 - **[API 文件](docs/api.md)** - 完整的 API 參考
 
 ## 快速開始
@@ -96,7 +97,8 @@ end
 - Ruby 3.1.0+
 - Rails 8.0.0+
 - Redcarpet gem（自動安裝）
-- Rolify gem（可選，用於權限控制）
+- Rolify gem（可選，用於角色管理）
+- Pundit gem（可選，用於進階權限控制）
 
 ## 貢獻
 
