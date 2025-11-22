@@ -8,7 +8,7 @@ import TreeViewController from "docmd/controllers/docmd/tree_view_controller"
 const application = window.Stimulus || Application.start()
 
 // 註冊 Docmd 的 controllers
-application.register("tree-view", TreeViewController)
+application.register("docmd--tree-view", TreeViewController)
 
 // 輸出給主應用程式使用
 export { application }

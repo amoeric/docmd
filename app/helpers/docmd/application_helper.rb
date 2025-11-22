@@ -81,7 +81,7 @@ module Docmd
             controller: "docmd--tree-view",
             "docmd--tree-view-animate-value": true
           },
-          class: "sticky top-4 h-[calc(100vh-2rem)] w-full p-4 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 overflow-auto"
+          class: "sticky top-4 w-64 max-h-[calc(100vh-2rem)] p-4 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 overflow-auto shrink-0"
         }
       ) do
         render_heading_nodes(headings)
@@ -118,7 +118,7 @@ module Docmd
                 expanded: "true"
               },
               "data-state": "open",
-              class: "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-150 outline-hidden focus:underline"
+              class: "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-150 outline-hidden focus:border-b-2 focus:border-red-500"
             }
           ) do
             folder_icon + content_tag(:span, node[:text], class: "font-medium")
@@ -142,7 +142,7 @@ module Docmd
             {
               href: "##{node[:id]}",
               data: { action: "click->docmd--tree-view#scrollToHeading" },
-              class: "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-150 outline-hidden focus:underline"
+              class: "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-150 outline-hidden focus:border-b-2 focus:border-red-500"
             }
           ) do
             file_icon + content_tag(:span, node[:text])

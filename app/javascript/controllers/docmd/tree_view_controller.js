@@ -21,6 +21,7 @@ export default class extends Controller {
     });
 
     this.addKeyboardListeners();
+    this.setupScrollSpy();
   }
 
   disconnect() {
@@ -31,6 +32,11 @@ export default class extends Controller {
       });
     }
     this.element.removeEventListener("keydown", this.handleKeydownBound);
+
+    // Clean up scroll spy
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+    }
   }
 
   addKeyboardListeners() {
@@ -180,6 +186,68 @@ export default class extends Controller {
       setTimeout(() => {
         targetElement.classList.remove("highlight-heading");
       }, 2000);
+    }
+  }
+
+  setupScrollSpy() {
+    // 找到所有文件中的標題
+    const headings = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3');
+
+    if (!headings.length) return;
+
+    // 設定 Intersection Observer
+    const observerOptions = {
+      root: null,
+      rootMargin: '-80px 0px -80% 0px', // 當標題在視窗上方 80px 位置時觸發
+      threshold: 0
+    };
+
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          this.highlightTocItem(id);
+        }
+      });
+    }, observerOptions);
+
+    // 觀察所有標題
+    headings.forEach(heading => {
+      if (heading.id) {
+        this.intersectionObserver.observe(heading);
+      }
+    });
+  }
+
+  highlightTocItem(headingId) {
+    // 移除所有現有的高亮
+    const allItems = this.element.querySelectorAll('a[href^="#"], button[data-heading-id]');
+    allItems.forEach(item => {
+      item.classList.remove('border-b-2', 'border-red-500');
+    });
+
+    // 高亮當前項目
+    const tocLink = this.element.querySelector(`a[href="#${headingId}"]`);
+    if (tocLink) {
+      tocLink.classList.add('border-b-2', 'border-red-500');
+
+      // 滾動 tree 目錄，讓當前項目可見
+      tocLink.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+    }
+
+    // 檢查是否需要展開父資料夾
+    const button = this.element.querySelector(`button[data-heading-id="${headingId}"]`);
+    if (button) {
+      button.classList.add('border-b-2', 'border-red-500');
+
+      // 滾動 tree 目錄，讓當前項目可見
+      button.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
     }
   }
 }

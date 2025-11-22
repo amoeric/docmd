@@ -3,9 +3,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
 <% end %>
 
-<!-- 文件大綱目錄 -->
-<%= render_tree_view_toc(@doc) %>
-<div class="bg-white shadow rounded-lg">
+<div class="flex gap-4">
+  <!-- 文件大綱目錄 -->
+  <%= render_tree_view_toc(@doc) %>
+
+  <!-- 文件內容 -->
+  <div class="flex-1 bg-white shadow rounded-lg">
   <div class="px-6 py-4 border-b">
     <div class="flex justify-between items-center">
       <div>
@@ -52,5 +55,6 @@
         <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto text-sm"><%= @doc.content %></pre>
       </div>
     </details>
+  </div>
   </div>
 </div>
