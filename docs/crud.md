@@ -35,10 +35,22 @@ roles: [admin, editor]  # 可選，需要 rolify gem
 
 掛載 engine 後，可以訪問以下路徑：
 
-- `/docmd` - 文件列表
+### 文件相關路由
+- `/docmd` - 首頁（文件列表）
+- `/docmd/docs` - 文件列表
 - `/docmd/docs/new` - 新增文件
 - `/docmd/docs/:slug` - 檢視文件
 - `/docmd/docs/:slug/edit` - 編輯文件
+- `/docmd/docs/preview` - 預覽文件（POST）
+
+### 標籤相關路由
+- `/docmd/tags` - 標籤雲頁面
+- `/docmd/tags/:name` - 查看特定標籤的文件
+
+### 圖片相關路由
+- `/docmd/images` - 圖片管理頁面
+- `/docmd/images/new` - 上傳新圖片
+- `/docmd/images/:path` - 顯示圖片（支援子目錄）
 
 ## 文件屬性
 

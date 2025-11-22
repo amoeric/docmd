@@ -12,6 +12,15 @@ Docmd.configure do |config|
   # 其他範例路徑：
   # config.markdown_folder_path = Rails.root.join('app', 'documents')
   # config.markdown_folder_path = '/absolute/path/to/markdown/files'
+
+  # 設定擁有最高權限的角色（可查看所有文件）
+  # 預設為 [:admin, :super_admin]
+  config.admin_roles = [:admin, :super_admin]
+
+  # 自訂範例：
+  # config.admin_roles = [:root]  # 只有 root 角色有最高權限
+  # config.admin_roles = [:admin, :manager, :moderator]  # 多個角色
+  # config.admin_roles = []  # 沒有最高權限角色
 end
 ```
 

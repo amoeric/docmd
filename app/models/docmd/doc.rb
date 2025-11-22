@@ -220,8 +220,9 @@ module Docmd
       # 檢查使用者是否有任何符合的角色
       # 假設主應用程式的 User 模型使用 rolify gem
       if user.respond_to?(:has_role?)
-        # 管理員總是可以查看所有文件
-        return true if user.has_role?(:admin)
+        # 檢查使用者是否擁有最高權限角色（可以查看所有文件）
+        admin_roles = Docmd.configuration.admin_roles || [:admin]
+        return true if admin_roles.any? { |role| user.has_role?(role) }
 
         # 檢查使用者是否有文件要求的任何角色
         roles.any? { |role| user.has_role?(role.to_sym) }
