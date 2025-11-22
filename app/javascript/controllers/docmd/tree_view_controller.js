@@ -161,4 +161,25 @@ export default class extends Controller {
       <path d="M13.75,5.25c1.105,0,2,.895,2,2v5.5c0,1.105-.895,2-2,2H4.25c-1.105,0-2-.895-2-2V4.75c0-1.105,.895-2,2-2h1.825c.587,0,1.144,.258,1.524,.705l1.524,1.795h4.626Z"></path>
     </g>`;
   }
+
+  scrollToHeading(event) {
+    event.preventDefault();
+    const link = event.currentTarget;
+    const targetId = link.getAttribute("href").substring(1);
+    const targetElement = document.getElementById(targetId);
+
+    if (targetElement) {
+      // 平滑滾動到目標標題
+      targetElement.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+      // 可選：高亮顯示目標標題
+      targetElement.classList.add("highlight-heading");
+      setTimeout(() => {
+        targetElement.classList.remove("highlight-heading");
+      }, 2000);
+    }
+  }
 }
