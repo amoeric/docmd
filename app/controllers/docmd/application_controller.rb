@@ -3,6 +3,7 @@ module Docmd
     # 繼承主應用程式的 ApplicationController
     # 這樣會自動使用主應用程式的 layout 和設定
     include Pundit::Authorization
+    include ::Pagy::Method
     rescue_from Pundit::NotAuthorizedError, with: :rescue_pundit_not_authorized
 
     private

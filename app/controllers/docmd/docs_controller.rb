@@ -6,15 +6,18 @@ module Docmd
 
     # GET /docs
     def index
-      @docs = pundit_policy_scope(Doc)
+      docs = pundit_policy_scope(Doc)
 
       # 只顯示已發布的文件（如果需要）
       if params[:published_only] == 'true'
-        @docs = @docs.select(&:published?)
+        docs = docs.select(&:published?)
       end
 
       # 依照日期排序，最新的在前面
-      @docs = @docs.sort_by(&:date).reverse
+      docs = docs.sort_by(&:date).reverse
+
+      # 分頁
+      @pagy, @docs = pagy(docs, limit: 10)
     end
 
     # GET /docs/:slug
