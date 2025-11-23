@@ -13,7 +13,10 @@ module Docmd
 
       def create_docs_folder
         empty_directory 'docs'
+        empty_directory 'docs/assets'
+        empty_directory 'docs/assets/images'
         create_file 'docs/.keep'
+        create_file 'docs/assets/images/.keep'
       end
 
       def display_readme

@@ -60,7 +60,9 @@
   </div>
 
   <!-- 文件大綱目錄 - 右側獨立滾動區域 -->
-  <div class="w-64 overflow-y-auto shrink-0">
-    <%= render_tree_view_toc(@doc) %>
-  </div>
+  <% if Docmd.configuration.show_toc %>
+    <div class="w-64 overflow-y-auto shrink-0">
+      <%= render_tree_view_toc(@doc) %>
+    </div>
+  <% end %>
 </div>

@@ -148,3 +148,39 @@
   text-decoration: line-through;
   color: #6b7280;
 }
+
+/* 平滑滾動 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 標題高亮效果 */
+.highlight-heading {
+  animation: highlight-fade 2s ease-in-out;
+  scroll-margin-top: 5rem;
+}
+
+@keyframes highlight-fade {
+  0% {
+    background-color: #fef3c7;
+    box-shadow: 0 0 0 4px #fef3c7;
+  }
+  50% {
+    background-color: #fde68a;
+    box-shadow: 0 0 0 4px #fde68a;
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+/* 為所有標題添加滾動偏移，避免被 sticky 目錄擋住 */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  scroll-margin-top: 5rem;
+}

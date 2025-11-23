@@ -21,6 +21,14 @@ Docmd.configure do |config|
   # config.admin_roles = [:root]  # 只有 root 角色有最高權限
   # config.admin_roles = [:admin, :manager, :moderator]  # 多個角色
   # config.admin_roles = []  # 沒有最高權限角色
+
+  # 是否顯示文件大綱目錄 (Table of Contents)
+  # 預設為 true，會在文件右側顯示基於標題（h1, h2, h3）的樹狀目錄
+  # 設為 false 可以隱藏目錄，讓文章內容佔滿整個寬度
+  config.show_toc = true
+
+  # 範例：隱藏文件大綱目錄
+  # config.show_toc = false
 end
 ```
 

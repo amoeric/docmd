@@ -39,9 +39,9 @@ bundle install
 rails generate docmd:install
 ```
 
-這會：
-- 在 `config/initializers/docmd.rb` 建立配置檔
-- 建立 `docs` 資料夾供你放置 Markdown 檔案
+執行後會在：
+- `config/initializers/docmd.rb` 建立配置檔
+- 跟目錄建立 `docs` 資料夾供你放置 Markdown 檔案
 
 ### 4. 掛載 engine 路由
 
@@ -63,11 +63,11 @@ end
 ```
 # app/views/laouts/application.html.erb
 <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "docmd/application", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "docmd/tailwind", "data-turbo-track": "reload" %>
 ```
 
 可以自訂 markdown 內容樣式：
-- **[Markdown 內容樣式](docs/markdown_content_css.md)**
+- **[Markdown 內容樣式](docs/markdown-content-css.md)**
 
 ### 6. 新增 rails block 設定
 部分頁面使用 rails block，安裝方式請參考 [Installation](https://railsblocks.com/docs/installation)
