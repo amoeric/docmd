@@ -81,7 +81,7 @@ module Docmd
             controller: "docmd--tree-view",
             "docmd--tree-view-animate-value": true
           },
-          class: "sticky top-4 w-64 max-h-[calc(100vh-2rem)] p-4 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 overflow-auto shrink-0"
+          class: "w-64 h-fit p-4 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 overflow-auto shrink-0"
         }
       ) do
         render_heading_nodes(headings)

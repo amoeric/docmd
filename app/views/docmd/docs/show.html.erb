@@ -1,35 +1,57 @@
-<div class="flex gap-4">
-  <!-- 文件大綱目錄 -->
-  <%= render_tree_view_toc(@doc) %>
+<div class="flex gap-4 h-screen overflow-hidden">
+  <!-- 文件內容 - 獨立滾動區域 -->
+  <div class="flex-1 overflow-y-auto">
+    <div class="flex items-center space-x-2 pb-4">
+      <%= link_to "編輯", edit_doc_path(@doc.slug), class: "px-4 py-2 text-sm font-medium rounded-lg bg-amber-600 text-white shadow-sm hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-200" if policy(@doc).edit? %>
+      <%= link_to "刪除", doc_path(@doc.slug), data: { turbo_method: :delete, turbo_confirm: "確定要刪除此文件嗎？" }, class: "px-4 py-2 text-sm font-medium rounded-lg bg-red-600 text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200" if policy(@doc).destroy? %>
+      <%= link_to "返回列表", docs_path, class: "px-4 py-2 text-sm font-medium rounded-lg bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200" %>
+    </div>
 
-  <!-- 文件內容 -->
-  <div class="flex-1 bg-white shadow rounded-lg">
-  <div class="px-6 py-4 border-b border-gray-200">
-    <div class="flex justify-between items-center">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900"><%= @doc.title %></h1>
-        <div class="mt-2 flex items-center space-x-4 text-sm text-gray-600">
-          <span>更新時間：<%= @doc.date.strftime('%Y-%m-%d %H:%M') %></span>
-          <% if @doc.published? %>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-              已發布
-            </span>
-          <% else %>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-              草稿
-            </span>
-          <% end %>
-        </div>
-        <% if @doc.tags.any? %>
-          <div class="mt-2">
-            <% @doc.tags.each do |tag| %>
-              <%= link_to tag, tag_path(tag), class: "inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 mr-2" %>
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900"><%= @doc.title %></h1>
+            <div class="mt-2 flex items-center space-x-4 text-sm text-gray-600">
+              <span>更新時間：<%= @doc.date.strftime('%Y-%m-%d %H:%M') %></span>
+              <% if @doc.published? %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  已發布
+                </span>
+              <% else %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                  草稿
+                </span>
+              <% end %>
+            </div>
+            <% if @doc.tags.any? %>
+              <div class="mt-2">
+                <% @doc.tags.each do |tag| %>
+                  <%= link_to tag, tag_path(tag), class: "inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 mr-2" %>
+                <% end %>
+              </div>
             <% end %>
           </div>
-        <% end %>
+        </div>
       </div>
 
-      <div class="flex items-center space-x-2">
+      <div class="px-6 py-8">
+        <article class="markdown-content">
+          <%= raw @doc.html_content %>
+        </article>
+      </div>
+
+      <div class="px-6 py-4 bg-gray-50">
+        <details class="cursor-pointer">
+          <summary class="font-medium text-gray-700 hover:text-gray-900">檢視原始 Markdown</summary>
+          <div class="mt-4">
+            <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto text-sm"><%= @doc.content %></pre>
+          </div>
+        </details>
+      </div>
+
+      <!-- 底部按鈕 -->
+      <div class="flex items-center space-x-2 p-4 border-t border-gray-200">
         <%= link_to "編輯", edit_doc_path(@doc.slug), class: "px-4 py-2 text-sm font-medium rounded-lg bg-amber-600 text-white shadow-sm hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-200" if policy(@doc).edit? %>
         <%= link_to "刪除", doc_path(@doc.slug), data: { turbo_method: :delete, turbo_confirm: "確定要刪除此文件嗎？" }, class: "px-4 py-2 text-sm font-medium rounded-lg bg-red-600 text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200" if policy(@doc).destroy? %>
         <%= link_to "返回列表", docs_path, class: "px-4 py-2 text-sm font-medium rounded-lg bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200" %>
@@ -37,19 +59,8 @@
     </div>
   </div>
 
-  <div class="px-6 py-8">
-    <article class="markdown-content">
-      <%= raw @doc.html_content %>
-    </article>
-  </div>
-
-  <div class="px-6 py-4 bg-gray-50">
-    <details class="cursor-pointer">
-      <summary class="font-medium text-gray-700 hover:text-gray-900">檢視原始 Markdown</summary>
-      <div class="mt-4">
-        <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto text-sm"><%= @doc.content %></pre>
-      </div>
-    </details>
-  </div>
+  <!-- 文件大綱目錄 - 右側獨立滾動區域 -->
+  <div class="w-64 overflow-y-auto shrink-0">
+    <%= render_tree_view_toc(@doc) %>
   </div>
 </div>

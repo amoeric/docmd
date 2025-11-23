@@ -231,11 +231,8 @@ export default class extends Controller {
     if (tocLink) {
       tocLink.classList.add('border-b-2', 'border-red-500');
 
-      // 滾動 tree 目錄，讓當前項目可見
-      tocLink.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest"
-      });
+      // 只滾動 TOC 容器內部，不影響頁面滾動
+      this.scrollToItemInToc(tocLink);
     }
 
     // 檢查是否需要展開父資料夾
@@ -243,10 +240,34 @@ export default class extends Controller {
     if (button) {
       button.classList.add('border-b-2', 'border-red-500');
 
-      // 滾動 tree 目錄，讓當前項目可見
-      button.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest"
+      // 只滾動 TOC 容器內部，不影響頁面滾動
+      this.scrollToItemInToc(button);
+    }
+  }
+
+  scrollToItemInToc(item) {
+    const container = this.element;
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = item.getBoundingClientRect();
+
+    // 檢查項目是否在可見區域內
+    const isVisible =
+      itemRect.top >= containerRect.top &&
+      itemRect.bottom <= containerRect.bottom;
+
+    // 如果不可見，滾動容器讓它可見
+    if (!isVisible) {
+      const scrollTop = container.scrollTop;
+      const itemOffsetTop = item.offsetTop;
+      const containerHeight = container.clientHeight;
+      const itemHeight = item.clientHeight;
+
+      // 計算需要滾動的位置（讓項目在容器中央）
+      const targetScroll = itemOffsetTop - (containerHeight / 2) + (itemHeight / 2);
+
+      container.scrollTo({
+        top: targetScroll,
+        behavior: "smooth"
       });
     }
   }
