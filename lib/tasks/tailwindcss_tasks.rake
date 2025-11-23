@@ -8,7 +8,9 @@ namespace :tailwindcss do
         Tailwindcss::Ruby.executable.to_s,
         "--input", Docmd::Engine.root.join("app/assets/tailwind/docmd/application.css").to_s,
         "--output", Docmd::Engine.root.join("app/assets/builds/docmd/tailwind.css").to_s,
-        "--cwd", Rails.root.to_s
+        "--content", Docmd::Engine.root.join("app/views/docmd/**/*.erb").to_s,
+        "--content", Docmd::Engine.root.join("app/helpers/docmd/**/*.rb").to_s,
+        "--content", Docmd::Engine.root.join("app/javascript/controllers/docmd/**/*.js").to_s,
       ]
 
       # Add minification in production
@@ -23,7 +25,9 @@ namespace :tailwindcss do
         Tailwindcss::Ruby.executable.to_s,
         "--input", Docmd::Engine.root.join("app/assets/tailwind/docmd/application.css").to_s,
         "--output", Docmd::Engine.root.join("app/assets/builds/docmd/tailwind.css").to_s,
-        "--cwd", Rails.root.to_s,
+        "--content", Docmd::Engine.root.join("app/views/docmd/**/*.erb").to_s,
+        "--content", Docmd::Engine.root.join("app/helpers/docmd/**/*.rb").to_s,
+        "--content", Docmd::Engine.root.join("app/javascript/controllers/docmd/**/*.js").to_s,
         "--watch"
       ]
 
