@@ -105,7 +105,7 @@ module Docmd
         content = ""
 
         if has_children
-          # 有子節點的標題（顯示為資料夾）
+          # 有子節點的標題
           content << content_tag(:button,
             {
               type: "button",
@@ -118,10 +118,15 @@ module Docmd
                 expanded: "true"
               },
               "data-state": "open",
-              class: "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-150 outline-hidden focus:border-b-2 focus:border-red-500"
+              class: "flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-150 outline-none"
             }
           ) do
-            folder_icon + content_tag(:span, node[:text], class: "font-medium")
+            indicator = content_tag(:span, "", {
+              class: "w-1 h-4 bg-red-500 rounded-sm hidden",
+              data: { "docmd--tree-view-target": "indicator" }
+            })
+            text = content_tag(:span, node[:text], class: "font-medium")
+            indicator + text
           end
 
           # 子節點容器
@@ -138,54 +143,24 @@ module Docmd
           end
         else
           # 沒有子節點的標題（顯示為檔案）
+          text_class = node[:level] == 2 ? "font-medium" : ""
           content << content_tag(:a,
             {
               href: "##{node[:id]}",
               data: { action: "click->docmd--tree-view#scrollToHeading" },
-              class: "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-150 outline-hidden focus:border-b-2 focus:border-red-500"
+              class: "flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-150 outline-none"
             }
           ) do
-            file_icon + content_tag(:span, node[:text])
+            indicator = content_tag(:span, "", {
+              class: "w-1 h-4 bg-red-500 rounded-sm hidden",
+              data: { "docmd--tree-view-target": "indicator" }
+            })
+            text = content_tag(:span, node[:text], class: text_class)
+            indicator + text
           end
         end
 
         content.html_safe
-      end
-    end
-
-    def folder_icon
-      content_tag(:svg,
-        {
-          data: { "docmd--tree-view-target": "icon" },
-          class: "folder-open",
-          xmlns: "http://www.w3.org/2000/svg",
-          width: "18",
-          height: "18",
-          viewBox: "0 0 18 18"
-        }
-      ) do
-        <<~SVG.html_safe
-          <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" stroke="currentColor">
-            <path d="M5,14.75h-.75c-1.105,0-2-.895-2-2V4.75c0-1.105,.895-2,2-2h1.825c.587,0,1.144,.258,1.524,.705l1.524,1.795h4.626c1.105,0,2,.895,2,2v1"></path>
-            <path d="M16.148,13.27l.843-3.13c.257-.953-.461-1.89-1.448-1.89H6.15c-.678,0-1.272,.455-1.448,1.11l-.942,3.5c-.257,.953,.461,1.89,1.448,1.89H14.217c.904,0,1.696-.607,1.931-1.48Z"></path>
-          </g>
-        SVG
-      end
-    end
-
-    def file_icon
-      content_tag(:svg,
-        xmlns: "http://www.w3.org/2000/svg",
-        width: "18",
-        height: "18",
-        viewBox: "0 0 18 18"
-      ) do
-        <<~SVG.html_safe
-          <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" stroke="currentColor">
-            <path d="M15.16,6.25h-3.41c-.552,0-1-.448-1-1V1.852"></path>
-            <path d="M2.75,14.25V3.75c0-1.105,.895-2,2-2h5.586c.265,0,.52,.105,.707,.293l3.914,3.914c.188,.188,.293,.442,.293,.707v7.586c0,1.105-.895,2-2,2H4.75c-1.105,0-2-.895-2-2Z"></path>
-          </g>
-        SVG
       end
     end
   end

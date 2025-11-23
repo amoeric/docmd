@@ -1,13 +1,14 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["icon", "content"];
+  static targets = ["icon", "content", "indicator"];
   static values = {
     animate: { type: Boolean, default: true }, // Whether to animate the tree view
   };
 
   connect() {
     this.isAnimating = false;
+    this.isScrolling = false; // 追蹤是否正在滾動
     // Initialize any folders that should start open
     this.element.querySelectorAll('[data-state="open"]').forEach((el) => {
       const button = el.previousElementSibling;
@@ -21,7 +22,11 @@ export default class extends Controller {
     });
 
     this.addKeyboardListeners();
-    this.setupScrollSpy();
+
+    // 延遲設置 scroll spy，確保 DOM 完全載入
+    setTimeout(() => {
+      this.setupScrollSpy();
+    }, 100);
   }
 
   disconnect() {
@@ -175,6 +180,12 @@ export default class extends Controller {
     const targetElement = document.getElementById(targetId);
 
     if (targetElement) {
+      // 標記開始滾動，暫時禁用 scroll spy
+      this.isScrolling = true;
+
+      // 立即高亮點擊的項目
+      this.highlightTocItem(targetId);
+
       // 平滑滾動到目標標題
       targetElement.scrollIntoView({
         behavior: "smooth",
@@ -186,6 +197,11 @@ export default class extends Controller {
       setTimeout(() => {
         targetElement.classList.remove("highlight-heading");
       }, 2000);
+
+      // 滾動完成後重新啟用 scroll spy
+      setTimeout(() => {
+        this.isScrolling = false;
+      }, 1000);
     }
   }
 
@@ -195,14 +211,20 @@ export default class extends Controller {
 
     if (!headings.length) return;
 
+    // 找到滾動容器（包含 markdown-content 的父容器）
+    const scrollContainer = document.querySelector('.markdown-content')?.closest('.overflow-y-auto');
+
     // 設定 Intersection Observer
     const observerOptions = {
-      root: null,
-      rootMargin: '-80px 0px -80% 0px', // 當標題在視窗上方 80px 位置時觸發
+      root: scrollContainer, // 監聽自定義滾動容器，而不是整個視窗
+      rootMargin: '-80px 0px -80% 0px', // 當標題在容器上方 80px 位置時觸發
       threshold: 0
     };
 
     this.intersectionObserver = new IntersectionObserver((entries) => {
+      // 如果正在滾動（用戶點擊了 TOC），暫時不更新高亮
+      if (this.isScrolling) return;
+
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const id = entry.target.id;
@@ -220,16 +242,24 @@ export default class extends Controller {
   }
 
   highlightTocItem(headingId) {
-    // 移除所有現有的高亮
+    // 移除所有現有的高亮並隱藏所有指示器
     const allItems = this.element.querySelectorAll('a[href^="#"], button[data-heading-id]');
     allItems.forEach(item => {
-      item.classList.remove('border-b-2', 'border-red-500');
+      item.classList.remove('bg-red-100', 'dark:bg-red-900/30', 'text-red-600', 'dark:text-red-400');
+      const indicator = item.querySelector('[data-docmd--tree-view-target="indicator"]');
+      if (indicator) {
+        indicator.classList.add('hidden');
+      }
     });
 
     // 高亮當前項目
     const tocLink = this.element.querySelector(`a[href="#${headingId}"]`);
     if (tocLink) {
-      tocLink.classList.add('border-b-2', 'border-red-500');
+      tocLink.classList.add('bg-red-100', 'dark:bg-red-900/30', 'text-red-600', 'dark:text-red-400');
+      const indicator = tocLink.querySelector('[data-docmd--tree-view-target="indicator"]');
+      if (indicator) {
+        indicator.classList.remove('hidden');
+      }
 
       // 只滾動 TOC 容器內部，不影響頁面滾動
       this.scrollToItemInToc(tocLink);
@@ -238,7 +268,11 @@ export default class extends Controller {
     // 檢查是否需要展開父資料夾
     const button = this.element.querySelector(`button[data-heading-id="${headingId}"]`);
     if (button) {
-      button.classList.add('border-b-2', 'border-red-500');
+      button.classList.add('bg-red-100', 'dark:bg-red-900/30', 'text-red-600', 'dark:text-red-400');
+      const indicator = button.querySelector('[data-docmd--tree-view-target="indicator"]');
+      if (indicator) {
+        indicator.classList.remove('hidden');
+      }
 
       // 只滾動 TOC 容器內部，不影響頁面滾動
       this.scrollToItemInToc(button);
