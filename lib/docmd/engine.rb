@@ -8,6 +8,11 @@ module Docmd
     initializer "docmd.assets" do |app|
       app.config.assets.paths << Engine.root.join("app/assets/stylesheets")
       app.config.assets.paths << Engine.root.join("app/assets/images")
+      app.config.assets.paths << Engine.root.join("app/assets/builds")
+    end
+
+    initializer "docmd.assets.precompile" do |app|
+      app.config.assets.precompile += %w( docmd/tailwind.css )
     end
 
     # 配置 importmap（用於 JavaScript）
