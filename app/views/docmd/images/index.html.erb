@@ -98,7 +98,12 @@
           <% end %>
         </div>
 
-        <!-- 統計資訊 -->
+        <% if @images.any? %>
+          <div class="flex justify-center px-6 py-4 bg-gray-50">
+            <%== @pagy.series_nav %>
+          </div>
+        <% end %>
+
         <div class="mt-8 text-center text-sm text-gray-500">
           共 <%= @images.size %> 張圖片
         </div>

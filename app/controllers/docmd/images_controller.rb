@@ -5,6 +5,7 @@ module Docmd
     def index
       authorize Image
       @images = policy_scope(Image, policy_scope_class: ImagePolicy::Scope)
+      @pagy, @images = pagy(@images, limit: 12)
     end
 
     # GET /images/*path
