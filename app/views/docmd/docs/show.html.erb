@@ -1,8 +1,3 @@
-<!-- 加入 Tailwind CSS 4 CDN -->
-<% content_for :head do %>
-  <script src="https://cdn.tailwindcss.com"></script>
-<% end %>
-
 <div class="flex gap-4">
   <!-- 文件大綱目錄 -->
   <%= render_tree_view_toc(@doc) %>
