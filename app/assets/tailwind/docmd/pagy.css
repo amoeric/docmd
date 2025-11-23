@@ -1,0 +1,41 @@
+/* pagy */
+@layer components {
+  .pagy {
+    @apply inline-flex rounded-md shadow-sm -space-x-px;
+  }
+
+  .pagy a,
+  .pagy span {
+    @apply relative inline-flex items-center px-4 py-2 text-sm font-medium;
+  }
+
+  /* Links (clickable pages) */
+  .pagy a[href] {
+    @apply text-gray-700 bg-white border border-gray-300 hover:bg-gray-50;
+  }
+
+  /* Current page */
+  .pagy a[aria-current="page"] {
+    @apply text-white bg-indigo-600 border border-indigo-600;
+  }
+
+  /* Disabled links (non-clickable) */
+  .pagy a:not([href]) {
+    @apply text-gray-400 bg-white border border-gray-300 cursor-not-allowed;
+  }
+
+  /* Gap separator (...) */
+  .pagy a[role="separator"] {
+    @apply text-gray-700 bg-white border border-gray-300;
+  }
+
+  /* First link rounded left */
+  .pagy a:first-child {
+    @apply rounded-l-md;
+  }
+
+  /* Last link rounded right */
+  .pagy a:last-child {
+    @apply rounded-r-md;
+  }
+}

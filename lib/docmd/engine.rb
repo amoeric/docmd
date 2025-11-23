@@ -10,11 +10,6 @@ module Docmd
       app.config.assets.paths << Engine.root.join("app/assets/images")
     end
 
-    # 設定 CSS 資產預編譯
-    initializer "docmd.assets.precompile" do |app|
-      app.config.assets.precompile += %w( docmd/application.css )
-    end
-
     # 配置 importmap（用於 JavaScript）
     initializer "docmd.importmap", before: "importmap" do |app|
       # 將 engine 的 JavaScript 路徑加入 Rails 的資產路徑
