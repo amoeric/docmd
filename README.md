@@ -62,7 +62,6 @@ end
 
 ```
 # app/views/laouts/application.html.erb
-<%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "docmd/tailwind", "data-turbo-track": "reload" %>
 ```
 
@@ -71,6 +70,19 @@ end
 
 ### 6. 新增 rails block 設定
 部分頁面使用 rails block，安裝方式請參考 [Installation](https://railsblocks.com/docs/installation)
+
+### 7. 新增 stimulus setting
+
+```
+# importmap.rb
+pin "docmd", to: "docmd.js"
+pin "docmd/controllers/docmd/tree_view_controller", to: "controllers/docmd/tree_view_controller.js"
+```
+
+```
+# app/javascript/application.js
+import "docmd"
+```
 
 ## 文件索引
 
