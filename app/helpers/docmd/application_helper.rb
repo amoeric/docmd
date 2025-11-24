@@ -3,6 +3,35 @@ module Docmd
     include ActionView::Helpers::SanitizeHelper
     include ActionView::Helpers::TextHelper
 
+    # 輔助方法：顯示文件權限 badge
+    def doc_permission_badge(doc)
+      if !doc.published?
+        # 草稿：只有管理員可以看
+        content_tag(:span, class: "ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800") do
+          icon = content_tag(:svg, class: "w-3 h-3 mr-1", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24") do
+            tag.path("stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z")
+          end
+          icon + "僅管理員"
+        end
+      elsif doc.roles.empty?
+        # 已發布且無角色限制：所有人可以看
+        content_tag(:span, class: "ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800") do
+          icon = content_tag(:svg, class: "w-3 h-3 mr-1", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24") do
+            tag.path("stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z")
+          end
+          icon + "公開閱讀"
+        end
+      else
+        # 已發布且有角色限制：只有特定角色可以看
+        content_tag(:span, class: "ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800") do
+          icon = content_tag(:svg, class: "w-3 h-3 mr-1", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24") do
+            tag.path("stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z")
+          end
+          icon + doc.roles.join(', ')
+        end
+      end
+    end
+
     # 輔助方法：取得文件的純文字摘要
     def doc_summary(doc, length = 200)
       return "" unless doc.content.present?
@@ -21,7 +50,7 @@ module Docmd
       truncate(plain_text, length: length)
     end
 
-    # 從 HTML 內容中提取標題結構（h1, h2, h3）
+    # 從 HTML 內容中提取標題結構（h1, h2, h3, h4）
     def extract_headings_structure(html_content)
       return [] if html_content.blank?
 
@@ -29,8 +58,8 @@ module Docmd
       headings = []
       stack = []
 
-      doc.css('h1, h2, h3').each do |heading|
-        level = heading.name[1].to_i  # 取得 1, 2, 或 3
+      doc.css('h1, h2, h3, h4').each do |heading|
+        level = heading.name[1].to_i  # 取得 1, 2, 3, 或 4
         text = heading.text.strip
         id = heading['id'] || text.parameterize
 
@@ -56,6 +85,26 @@ module Docmd
           end
         elsif level == 3
           if stack.length >= 2 && stack[1][:level] == 2
+            stack[1][:children] << node
+            stack[2] = node
+          elsif stack.any? && stack.first[:level] == 2
+            stack.first[:children] << node
+            stack[1] = node
+          elsif stack.any? && stack.first[:level] == 1
+            stack.first[:children] << node
+            stack[1] = node
+          else
+            headings << node
+            stack = [node]
+          end
+        elsif level == 4
+          if stack.length >= 3 && stack[2][:level] == 3
+            stack[2][:children] << node
+          elsif stack.length >= 2 && stack[1][:level] == 3
+            stack[1][:children] << node
+          elsif stack.any? && stack.first[:level] == 3
+            stack.first[:children] << node
+          elsif stack.length >= 2 && stack[1][:level] == 2
             stack[1][:children] << node
           elsif stack.any? && stack.first[:level] == 2
             stack.first[:children] << node

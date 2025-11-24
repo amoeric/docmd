@@ -207,7 +207,7 @@ export default class extends Controller {
 
   setupScrollSpy() {
     // 找到所有文件中的標題
-    const headings = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3');
+    const headings = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4');
 
     if (!headings.length) return;
 
@@ -252,30 +252,50 @@ export default class extends Controller {
       }
     });
 
-    // 高亮當前項目
-    const tocLink = this.element.querySelector(`a[href="#${headingId}"]`);
-    if (tocLink) {
-      tocLink.classList.add('bg-red-100', 'dark:bg-red-900/30', 'text-red-600', 'dark:text-red-400');
-      const indicator = tocLink.querySelector('[data-docmd--tree-view-target="indicator"]');
-      if (indicator) {
-        indicator.classList.remove('hidden');
-      }
+    // 高亮當前項目 - 先嘗試 link（沒有子節點）
+    let currentItem = this.element.querySelector(`a[href="#${headingId}"]`);
 
-      // 只滾動 TOC 容器內部，不影響頁面滾動
-      this.scrollToItemInToc(tocLink);
+    // 如果沒找到 link，嘗試 button（有子節點）
+    if (!currentItem) {
+      currentItem = this.element.querySelector(`button[data-heading-id="${headingId}"]`);
     }
 
-    // 檢查是否需要展開父資料夾
-    const button = this.element.querySelector(`button[data-heading-id="${headingId}"]`);
-    if (button) {
-      button.classList.add('bg-red-100', 'dark:bg-red-900/30', 'text-red-600', 'dark:text-red-400');
-      const indicator = button.querySelector('[data-docmd--tree-view-target="indicator"]');
+    if (currentItem) {
+      // 展開所有父節點
+      this.expandParentFolders(currentItem);
+
+      // 高亮當前項目
+      currentItem.classList.add('bg-red-100', 'dark:bg-red-900/30', 'text-red-600', 'dark:text-red-400');
+      const indicator = currentItem.querySelector('[data-docmd--tree-view-target="indicator"]');
       if (indicator) {
         indicator.classList.remove('hidden');
       }
 
-      // 只滾動 TOC 容器內部，不影響頁面滾動
-      this.scrollToItemInToc(button);
+      // 滾動到可見位置
+      this.scrollToItemInToc(currentItem);
+    }
+  }
+
+  expandParentFolders(item) {
+    // 向上遍歷 DOM，找到所有折疊的父容器並展開
+    let current = item.parentElement;
+
+    while (current && current !== this.element) {
+      // 檢查是否是折疊的內容容器
+      if (current.hasAttribute('data-state') && current.getAttribute('data-state') === 'closed') {
+        // 找到對應的 button
+        const contentId = current.id;
+        const button = this.element.querySelector(`button[aria-controls="${contentId}"]`);
+
+        if (button && button.getAttribute('aria-expanded') === 'false') {
+          // 展開這個資料夾（不使用動畫）
+          button.setAttribute('aria-expanded', 'true');
+          current.setAttribute('data-state', 'open');
+          current.removeAttribute('hidden');
+        }
+      }
+
+      current = current.parentElement;
     }
   }
 
