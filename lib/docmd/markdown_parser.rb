@@ -2,11 +2,24 @@ require 'redcarpet'
 
 module Docmd
   class MarkdownParser
+    # 自定義 Renderer，在標題旁邊添加錨點連結圖標
+    class CustomHTMLRenderer < Redcarpet::Render::HTML
+      def header(text, header_level)
+        # 生成與 Redcarpet with_toc_data 相同的 id
+        id = text.downcase.gsub(/[^a-z0-9\u4e00-\u9fff]+/, '-').gsub(/^-|-$/, '')
+
+        # 錨點連結圖標 SVG (link icon)
+        anchor_link = %(<a href="##{id}" class="heading-anchor" aria-label="連結到 #{text}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a>)
+
+        %(<h#{header_level} id="#{id}" class="heading-with-anchor">#{text}#{anchor_link}</h#{header_level}>\n)
+      end
+    end
+
     attr_reader :renderer, :markdown
 
     def initialize(options = {})
-      # 建立 Redcarpet renderer，支援常用的 Markdown 功能
-      @renderer = Redcarpet::Render::HTML.new(
+      # 建立自定義 renderer，支援常用的 Markdown 功能
+      @renderer = CustomHTMLRenderer.new(
         filter_html: options[:filter_html] || false,
         no_images: options[:no_images] || false,
         no_links: options[:no_links] || false,

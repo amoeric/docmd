@@ -36,6 +36,37 @@
   color: #374151;
 }
 
+/* 標題錨點連結樣式 */
+.markdown-content .heading-with-anchor {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.markdown-content .heading-anchor {
+  opacity: 0;
+  color: #9ca3af;
+  text-decoration: none;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.markdown-content .heading-with-anchor:hover .heading-anchor {
+  opacity: 1;
+}
+
+.markdown-content .heading-anchor:hover {
+  color: #2563eb;
+}
+
+.markdown-content .heading-anchor svg {
+  width: 0.8em;
+  height: 0.8em;
+}
+
 .markdown-content p {
   margin-bottom: 1rem;
 }
