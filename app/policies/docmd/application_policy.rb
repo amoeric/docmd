@@ -51,6 +51,13 @@ module Docmd
       allowed_actions == :all || Array(allowed_actions).include?(action)
     end
 
+    def admin?
+      return false unless user
+
+      admin_roles = Docmd.configuration.admin_roles || [:admin, :super_admin]
+      admin_roles.any? { |role| user.has_role?(role) }
+    end
+
     class Scope
       def initialize(user, scope)
         @user = user
@@ -64,6 +71,13 @@ module Docmd
       private
 
       attr_reader :user, :scope
+
+      def admin?
+        return false unless user
+
+        admin_roles = Docmd.configuration.admin_roles || [:admin, :super_admin]
+        admin_roles.any? { |role| user.has_role?(role) }
+      end
     end
   end
 end

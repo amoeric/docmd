@@ -3,11 +3,12 @@ module Docmd
     apply_unauthenticated_access_from_config :tags
 
     after_action :verify_authorized
+    after_action :verify_policy_scoped, only: [:index]
 
     # GET /tags
     # 顯示所有標籤及其文件數量
     def index
-      @tags = Tag.all
+      @tags = policy_scope(Tag, policy_scope_class: Docmd::TagPolicy::Scope)
       authorize Tag
     end
 
@@ -20,6 +21,8 @@ module Docmd
         redirect_to tags_path, alert: "找不到標籤：#{params[:id]}"
       else
         authorize @tag
+        # 過濾出使用者有權限查看的文件
+        @visible_docs = @tag.docs.select { |doc| policy(doc).show? }
       end
     end
   end

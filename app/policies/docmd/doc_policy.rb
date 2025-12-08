@@ -13,20 +13,22 @@ module Docmd
     end
 
     def show?
-      # 如果設定允許未認證訪問 show，則略過認證檢查
-      return true if unauthenticated_access_allowed?(:show)
-
-      # 需要登入才能看有角色限制的文件
-      return false unless user
-
-      # 管理員可以看所有文件
+      # 管理員可以看所有文件（包含未發布）
       return true if admin?
+
+      # 未登入且允許未認證訪問：只能看已發布的文件
+      if unauthenticated_access_allowed?(:show) && user.blank?
+        return doc.published? && doc.roles.empty?
+      end
 
       # 未發布的文件只有管理員可以看
       return false unless doc.published?
 
       # 如果文件沒有設定角色限制，所有人都可以看
       return true if doc.roles.empty?
+
+      # 有角色限制的文件需要登入
+      return false unless user
 
       # 檢查使用者是否有文件所需的任一角色
       doc.roles.any? { |role| user.has_role?(role.to_sym) }
@@ -60,16 +62,6 @@ module Docmd
       new?
     end
 
-    private
-
-    def admin?
-      return false unless user
-
-      # 使用 Docmd 設定的管理員角色
-      admin_roles = Docmd.configuration.admin_roles || [:admin, :super_admin]
-      admin_roles.any? { |role| user.has_role?(role) }
-    end
-
     class Scope < ApplicationPolicy::Scope
       def resolve
         docs = scope.respond_to?(:all) ? scope.all : scope
@@ -86,15 +78,6 @@ module Docmd
           # 未登入使用者只能看到已發布且沒有角色限制的文件
           docs.select { |doc| doc.published? && doc.roles.empty? }
         end
-      end
-
-      private
-
-      def admin?
-        return false unless user
-
-        admin_roles = Docmd.configuration.admin_roles || [:admin, :super_admin]
-        admin_roles.any? { |role| user.has_role?(role) }
       end
     end
   end

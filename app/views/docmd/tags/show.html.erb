@@ -25,10 +25,9 @@
       </div>
     </div>
 
-    <% visible_docs = @tag.docs.select { |doc| policy(doc).show? } %>
     <div class="divide-y divide-gray-200">
-      <% if visible_docs.any? %>
-        <% visible_docs.each do |doc| %>
+      <% if @visible_docs.any? %>
+        <% @visible_docs.each do |doc| %>
           <div class="px-6 py-6 hover:bg-gray-50 transition">
             <div class="flex justify-between items-start">
               <div class="flex-1">
