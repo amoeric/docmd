@@ -1,4 +1,11 @@
 <div class="flex gap-4 h-screen overflow-hidden">
+  <!-- 文件大綱目錄 - 左側 -->
+  <% if Docmd.configuration.show_toc && Docmd.configuration.toc_position == :left %>
+    <div class="w-64 overflow-y-auto shrink-0">
+      <%= render_tree_view_toc(@doc) %>
+    </div>
+  <% end %>
+
   <!-- 文件內容 - 獨立滾動區域 -->
   <div class="flex-1 overflow-y-auto">
     <div class="flex items-center space-x-2 pb-4">
@@ -59,8 +66,8 @@
     </div>
   </div>
 
-  <!-- 文件大綱目錄 - 右側獨立滾動區域 -->
-  <% if Docmd.configuration.show_toc %>
+  <!-- 文件大綱目錄 - 右側 -->
+  <% if Docmd.configuration.show_toc && Docmd.configuration.toc_position == :right %>
     <div class="w-64 overflow-y-auto shrink-0">
       <%= render_tree_view_toc(@doc) %>
     </div>

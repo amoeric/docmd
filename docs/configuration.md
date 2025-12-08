@@ -30,6 +30,13 @@ Docmd.configure do |config|
   # 範例：隱藏文件大綱目錄
   # config.show_toc = false
 
+  # 設定文件大綱目錄 (TOC) 的位置
+  # 預設為 :right（右側），可設為 :left（左側）
+  config.toc_position = :right
+
+  # 範例：將目錄顯示在左側
+  # config.toc_position = :left
+
   # 設定允許未認證訪問的頁面
   # 如果主應用程式有使用 Rails Authentication，
   # 可以透過此設定讓特定頁面不需要登入即可訪問
