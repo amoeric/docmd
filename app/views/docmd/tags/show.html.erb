@@ -25,23 +25,16 @@
       </div>
     </div>
 
+    <% visible_docs = @tag.docs.select { |doc| policy(doc).show? } %>
     <div class="divide-y divide-gray-200">
-      <% if @tag.docs.any? %>
-        <% @tag.docs.each do |doc| %>
+      <% if visible_docs.any? %>
+        <% visible_docs.each do |doc| %>
           <div class="px-6 py-6 hover:bg-gray-50 transition">
             <div class="flex justify-between items-start">
               <div class="flex-1">
                 <h3 class="text-xl font-semibold mb-2">
                   <%= link_to doc.title, doc_path(doc.slug), class: "text-blue-600 hover:text-blue-800" %>
-                  <% if doc.published? %>
-                    <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      已發布
-                    </span>
-                  <% else %>
-                    <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      草稿
-                    </span>
-                  <% end %>
+                  <%= doc_permission_badge(doc) %>
                 </h3>
 
                 <!-- 文件摘要（取前 200 字） -->
@@ -91,7 +84,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                   </svg>
                   編輯
-                <% end %>
+                <% end if policy(doc).edit? %>
               </div>
             </div>
           </div>

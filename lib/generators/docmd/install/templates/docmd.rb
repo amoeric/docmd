@@ -29,4 +29,10 @@ Docmd.configure do |config|
 
   # 範例：隱藏文件大綱目錄
   # config.show_toc = false
+
+  # 範例：允許頁面可以不登入即可瀏覽
+  # config.allow_unauthenticated_access = {
+  #   docs: [:index, :show],
+  #   tags: [:index, :show]
+  # }
 end

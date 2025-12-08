@@ -1,6 +1,6 @@
 module Docmd
   class Configuration
-    attr_accessor :markdown_folder_path, :layout, :admin_roles, :show_toc
+    attr_accessor :markdown_folder_path, :layout, :admin_roles, :show_toc, :allow_unauthenticated_access
 
     def initialize
       @markdown_folder_path = Rails.root.join('docs') if defined?(Rails)
@@ -9,6 +9,10 @@ module Docmd
       @admin_roles = [:admin, :super_admin]
       # 是否顯示文件大綱目錄 (TOC)
       @show_toc = true  # 預設顯示
+      # 允許未認證訪問的頁面設定
+      # 格式: { controller: [actions] } 或 { controller: :all }
+      # 例如: { docs: [:index, :show], tags: :all }
+      @allow_unauthenticated_access = {}
     end
   end
 

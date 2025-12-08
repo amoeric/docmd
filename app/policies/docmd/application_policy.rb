@@ -36,6 +36,21 @@ module Docmd
       false
     end
 
+    private
+
+    def unauthenticated_access_allowed?(action, controller: nil)
+      config = Docmd.configuration.allow_unauthenticated_access
+      return false if config.blank?
+
+      # 自動推斷 controller 名稱（例如 DocPolicy -> :docs）
+      controller ||= self.class.name.demodulize.sub(/Policy$/, '').downcase.pluralize.to_sym
+
+      allowed_actions = config[controller]
+      return false unless allowed_actions
+
+      allowed_actions == :all || Array(allowed_actions).include?(action)
+    end
+
     class Scope
       def initialize(user, scope)
         @user = user

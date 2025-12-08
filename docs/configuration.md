@@ -29,6 +29,24 @@ Docmd.configure do |config|
 
   # 範例：隱藏文件大綱目錄
   # config.show_toc = false
+
+  # 設定允許未認證訪問的頁面
+  # 如果主應用程式有使用 Rails Authentication，
+  # 可以透過此設定讓特定頁面不需要登入即可訪問
+  # 預設為空 {}，表示使用主應用程式的認證設定
+  # config.allow_unauthenticated_access = {}
+
+  # 範例：讓 docs 的 index 和 show 頁面可以公開訪問
+  # config.allow_unauthenticated_access = { docs: [:index, :show] }
+
+  # 範例：讓 tags 的所有頁面都可以公開訪問
+  # config.allow_unauthenticated_access = { tags: :all }
+
+  # 範例：讓所有文件相關頁面都可以公開訪問（只讀）
+  # config.allow_unauthenticated_access = {
+  #   docs: [:index, :show],
+  #   tags: [:index, :show]
+  # }
 end
 ```
 
