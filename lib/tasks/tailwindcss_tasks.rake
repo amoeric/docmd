@@ -1,4 +1,9 @@
-require "tailwindcss-rails"
+begin
+  require "tailwindcss-rails"
+rescue LoadError
+  # tailwindcss-rails 不存在時跳過（例如在測試環境）
+  return
+end
 
 namespace :tailwindcss do
   namespace :docmd do

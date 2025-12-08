@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(RAILS_ENV=test bin/rails db:migrate:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,20 @@
+# 測試用的使用者
+admin:
+  email: admin@example.com
+  roles: admin
+
+super_admin:
+  email: super_admin@example.com
+  roles: super_admin
+
+regular_user:
+  email: user@example.com
+  roles: member
+
+premium_user:
+  email: premium@example.com
+  roles: member,premium
+
+no_role_user:
+  email: norole@example.com
+  roles: ""
