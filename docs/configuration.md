@@ -43,13 +43,13 @@ Docmd.configure do |config|
   # 預設為空 {}，表示使用主應用程式的認證設定
   # config.allow_unauthenticated_access = {}
 
-  # 範例：讓 docs 的 index 和 show 頁面可以公開訪問
+  # 範例：讓 docs 的 index 和 show 頁面可以不登入即可瀏覽
   # config.allow_unauthenticated_access = { docs: [:index, :show] }
 
-  # 範例：讓 tags 的所有頁面都可以公開訪問
+  # 範例：讓 tags 的 index 和 show 頁面可以不登入即可瀏覽
   # config.allow_unauthenticated_access = { tags: :all }
 
-  # 範例：讓所有文件相關頁面都可以公開訪問（只讀）
+  # 範例：允許頁面可以不登入即可瀏覽 (僅支援各頁面的 index 和 show 頁面、 images 頁面僅支援 show)
   # config.allow_unauthenticated_access = {
   #   docs: [:index, :show],
   #   tags: [:index, :show]

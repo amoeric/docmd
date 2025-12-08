@@ -1,5 +1,7 @@
 module Docmd
   class ImagesController < ApplicationController
+    apply_unauthenticated_access_from_config :images
+
     # GET /images
     # 圖片管理頁面
     def index

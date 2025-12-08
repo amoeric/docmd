@@ -13,9 +13,13 @@ module Docmd
       admin?
     end
 
-    # 只有管理員可以查看圖片詳情
+    # 查看圖片詳情
+    # 允許管理員或未認證訪問（如果配置允許）
     def show?
-      admin?
+      return true if admin?
+      return true if unauthenticated_access_allowed?(:show)
+
+      false
     end
 
     # 只有管理員可以新增圖片

@@ -37,7 +37,7 @@ Docmd.configure do |config|
   # 範例：將目錄顯示在左側
   # config.toc_position = :left
 
-  # 範例：允許頁面可以不登入即可瀏覽
+  # 範例：允許頁面可以不登入即可瀏覽 (僅支援各頁面的 index 和 show 頁面、 images 頁面僅支援 show)
   # config.allow_unauthenticated_access = {
   #   docs: [:index, :show],
   #   tags: [:index, :show]
