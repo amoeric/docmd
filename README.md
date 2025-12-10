@@ -71,18 +71,21 @@ end
 ### 6. 新增 rails block 設定
 部分頁面使用 rails block，安裝方式請參考 [Installation](https://railsblocks.com/docs/installation)
 
-### 7. 新增 stimulus setting
+### 7. JavaScript 自動載入
+✅ **JavaScript 已自動配置！支援 importmap 和 esbuild**
 
-```
-# importmap.rb
-pin "docmd", to: "docmd.js"
-pin "docmd/controllers/docmd/tree_view_controller", to: "controllers/docmd/tree_view_controller.js"
-```
+執行 `rails generate docmd:install` 時，generator 會自動：
+- 檢測主應用程式使用的 JavaScript 打包工具（importmap 或 esbuild）
+- 將 engine 的 importmap 配置合併到主應用程式（如果使用 importmap）
+- 在 `app/javascript/application.js` 中自動添加 `import "docmd"`
 
-```
-# app/javascript/application.js
-import "docmd"
-```
+**支援的工具：**
+- ✅ **importmap** - 自動配置 importmap pins
+- ✅ **esbuild** - 自動配置路徑解析（通過 jsbundling-rails）
+
+所有 JavaScript 模組會自動載入，無需手動配置。
+
+> **注意**：如果主應用程式沒有 `app/javascript/application.js` 檔案，請手動創建並添加 `import "docmd"`
 
 ## 文件索引
 

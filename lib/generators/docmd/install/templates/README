@@ -30,9 +30,15 @@ Docmd 已成功安裝！
    # 或解析所有檔案
    all_docs = Docmd::MarkdownParser.parse_all
 
-6. 訪問文件管理介面：
+6. JavaScript 自動配置：
+   - ✅ Engine 的 importmap 配置已自動合併到主應用程式（如果使用 importmap）
+   - ✅ 已在 app/javascript/application.js 中自動添加 import "docmd"
+   - ✅ 支援 importmap 和 esbuild（jsbundling-rails）
+   - 所有 JavaScript 模組會自動載入，無需手動配置
+
+7. 訪問文件管理介面：
    http://localhost:3000/docmd
 
-7. 重新啟動你的 Rails 應用程式以載入新的配置
+8. 重新啟動你的 Rails 應用程式以載入新的配置
 
 ===============================================================================
