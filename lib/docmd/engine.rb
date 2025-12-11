@@ -12,7 +12,11 @@ module Docmd
     end
 
     initializer "docmd.assets.precompile" do |app|
-      app.config.assets.precompile += %w( docmd/tailwind.css )
+      app.config.assets.precompile += %w(
+        docmd/tailwind.css
+        docmd.js
+        controllers/docmd/tree_view_controller.js
+      )
     end
 
     # 配置 importmap（用於 JavaScript）

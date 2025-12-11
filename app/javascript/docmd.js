@@ -1,12 +1,14 @@
 // Docmd Engine JavaScript 入口檔
-// 只導出 controllers，讓主應用程式負責註冊
+// 自動註冊 docmd 的 Stimulus controllers
 
-import TreeViewController from "./controllers/docmd/tree_view_controller"
+import { Application } from "@hotwired/stimulus"
+import TreeViewController from "docmd/controllers/docmd/tree_view_controller"
 
-// 導出所有 controllers
-export { TreeViewController }
+// 使用主應用程式的 Stimulus 實例，或建立新的
+const application = window.Stimulus || Application.start()
 
-// 提供方便的註冊函式
-export function registerDocmdControllers(application) {
-  application.register("docmd--tree-view", TreeViewController)
-}
+// 註冊 Docmd 的 controllers
+application.register("docmd--tree-view", TreeViewController)
+
+// 導出供主應用程式使用
+export { TreeViewController, application }
