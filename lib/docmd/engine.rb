@@ -15,24 +15,19 @@ module Docmd
       app.config.assets.precompile += %w( docmd/tailwind.css )
     end
 
-    # 配置 JavaScript（支援 importmap 和 esbuild）
-    initializer "docmd.javascript", before: "importmap" do |app|
+    # 配置 importmap（用於 JavaScript）
+    initializer "docmd.importmap", before: "importmap" do |app|
       # 將 engine 的 JavaScript 路徑加入 Rails 的資產路徑
-      javascript_path = Engine.root.join("app/javascript")
-      app.config.assets.paths << javascript_path
+      app.config.assets.paths << Engine.root.join("app/javascript")
 
-      # 支援 importmap
+      # 如果主應用程式有使用 importmap，自動載入 engine 的 importmap 配置
       if app.config.respond_to?(:importmap)
-        importmap_path = Engine.root.join("config/importmap.rb")
-        app.config.importmap.paths << importmap_path if importmap_path.exist?
-        Rails.logger.debug "✅ Docmd Engine: Importmap configured"
+        app.config.importmap.paths << Engine.root.join("config/importmap.rb")
       end
 
-      # 支援 esbuild/jsbundling-rails
-      # esbuild 會自動從 app/javascript 路徑中解析模組
-      # 主應用程式只需要 import "docmd" 即可
-      Rails.logger.debug "✅ Docmd Engine: JavaScript paths configured for esbuild/importmap"
-      puts "✅ Docmd Engine: JavaScript configured (supports importmap & esbuild)" if Rails.env.development?
+      # 開發環境下可以看到載入訊息
+      Rails.logger.debug "✅ Docmd Engine: Importmap configured"
+      puts "✅ Docmd Engine loaded and importmap configured" if Rails.env.development?
     end
 
     # Engine 載入時執行

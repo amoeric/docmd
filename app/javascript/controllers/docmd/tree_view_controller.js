@@ -1,4 +1,6 @@
-import { Controller } from "@hotwired/stimulus";
+// Controller 會從主應用程式的 stimulus 實例取得
+// 使用時主應用程式需要確保 @hotwired/stimulus 已安裝
+import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["icon", "content", "indicator"];
